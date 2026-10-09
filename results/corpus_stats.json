@@ -1,0 +1,36 @@
+{
+  "cleaning": {
+    "lines": 45974,
+    "parsed": 45974,
+    "duplicate_rows_removed": 39,
+    "unique_sentences": 45935,
+    "gold_conflict_sentences": 6
+  },
+  "gold_counts": {
+    "POZ": 12277,
+    "NEG": 16898,
+    "NEU": 11246,
+    "AMB": 5514
+  },
+  "gold_share": {
+    "POZ": 0.2673,
+    "NEG": 0.3679,
+    "NEU": 0.2448,
+    "AMB": 0.12
+  },
+  "n_tokens_quantiles": {
+    "q5": 5.0,
+    "q25": 9.0,
+    "q50": 15.0,
+    "q75": 23.0,
+    "q95": 41.0
+  },
+  "n_tokens_mean": 17.88,
+  "sampling_frame_size": 41373,
+  "sampling_frame_gold_counts": {
+    "POZ": 11092,
+    "NEG": 15073,
+    "NEU": 10322,
+    "AMB": 4886
+  }
+}

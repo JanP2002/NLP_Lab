@@ -1,0 +1,12 @@
+# sent_id zdań użytych jako przykłady w wytycznych – wykluczone z próbek do anotacji
+29119
+14243
+36067
+10131
+4394
+45409
+39030
+27990
+24432
+32596
+4299
