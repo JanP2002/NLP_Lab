@@ -1,0 +1,15 @@
+1. Ocena całego zdania: Należy uwzględniać ogólny wydźwięk wypowiedzi, a nie tylko pojedyncze słowa nacechowane emocjonalnie.
+
+2. Fakt a opinia: Sam opis problemu lub niekorzystnego zdarzenia nie musi oznaczać NEG. Jeśli brak wyraźnej oceny emocjonalnej, należy preferować NEU.
+
+3. Ocena poszczególnych aspektów: Negatywna ocena jednego elementu, np. ceny, może uzasadniać NEG, nawet jeśli pozostała część wypowiedzi jest neutralna.
+
+4. Stosowanie AMB: Etykietę AMB należy przypisywać, gdy wypowiedź zawiera istotne oceny pozytywne i negatywne, a żadna z nich wyraźnie nie dominuje.
+
+5. Negacja i kontekst: Negację, ironię i sarkazm należy interpretować w kontekście całej wypowiedzi, unikając mechanicznego przypisywania etykiet na podstawie pojedynczych słów.
+
+6. Słowa zależne od kontekstu: Określenia takie jak „może”, „tylko”, „mało” czy „słabo” nie powinny automatycznie przesądzać o sentymencie.
+
+7. Oznaczanie tokenów: Etykiety tokenów należy nadawać zgodnie z ich funkcją w zdaniu, uwzględniając kontekst, negację oraz ich wpływ na wydźwięk całej wypowiedzi.
+
+8. Rozstrzyganie niejednoznaczności: Jeśli brak wyraźnych przesłanek pozytywnej lub negatywnej oceny, należy preferować NEU.
