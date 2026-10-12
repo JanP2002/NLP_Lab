@@ -25,7 +25,25 @@ CORPUS_STATS = ROOT / "results" / "corpus_stats.json"
 ANNOT_DIR = ROOT / "annotation"
 GUIDELINES_DIR = ANNOT_DIR / "guidelines"
 EXAMPLE_IDS = GUIDELINES_DIR / "example_ids.txt"  # zdania z wytycznych – wykluczone z próbek
+RESULTS_DIR = ROOT / "results"
+
+# --- Zgodność ---------------------------------------------------------------
+BOOTSTRAP = {"n": 2000, "seed": 2026}  # przedziały ufności: losowanie zdań ze zwracaniem
 
 
 def iter_dir(iteration: int) -> Path:
     return ANNOT_DIR / f"iter{iteration}"
+
+
+def filled_sheets_dir(iteration: int) -> Path:
+    """Wypełnione arkusze pobrane z Google Sheets (konwencja zespołu: iterN_artefacts/)."""
+    return ANNOT_DIR / f"iter{iteration}_artefacts"
+
+
+def export_dir(iteration: int) -> Path:
+    """Eksport oetykietowanych danych (src.export)."""
+    return iter_dir(iteration) / "export"
+
+
+def results_dir(iteration: int) -> Path:
+    return RESULTS_DIR / f"iter{iteration}"
