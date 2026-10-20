@@ -1,0 +1,310 @@
+% Sprawozdanie (wersja skrócona): Zadanie 1 -- Korpusy anotowane oraz osadzenia słów i tekstów
+% Liczby i tabele z generated/*.tex powstają z plików repo (python report/build_assets.py).
+% Word Embeddings: uzupełnij miejsca oznaczone \todo{...}.
+\documentclass[11pt,a4paper]{article}
+
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{lmodern}
+\usepackage[polish]{babel}
+\usepackage[margin=2.4cm]{geometry}
+\usepackage{microtype}
+\usepackage{graphicx}
+\usepackage{booktabs}
+\usepackage{array}
+\usepackage{amsmath}
+\usepackage{xcolor}
+\usepackage{float}
+\usepackage[font=small,labelfont=bf]{caption}
+\usepackage{enumitem}
+\usepackage[colorlinks=true,linkcolor=blue!50!black,urlcolor=blue!50!black,citecolor=blue!50!black]{hyperref}
+
+\graphicspath{{figures/}}
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{0.5em}
+\setlist{itemsep=0.1em,topsep=0.2em}
+
+\newcommand{\todo}[1]{\par\noindent\fcolorbox{orange!70!black}{yellow!20}{\parbox{\dimexpr\linewidth-2\fboxsep-2\fboxrule\relax}{\small\textbf{DO UZUPEŁNIENIA:} #1}}\par}
+\newcommand{\inputorTodo}[2]{\IfFileExists{generated/#1.tex}{\input{generated/#1}}{\todo{#2}}}
+
+\input{generated/macros}
+
+\title{Zadanie 1: Korpusy anotowane oraz osadzenia słów i tekstów\\[0.3em]
+\large PolEmo 2.0 -- anotacja, zgodność anotatorów, osadzenia zdań}
+\author{Aleksandra Hendrysiak, Jan Poręba, Bartosz Procki, Igor Sala; Grupa lab. 4 (17:05)}
+\date{}
+
+\begin{document}
+\maketitle
+
+% -----------------------------------------------------------------------------
+\section{Zakres i dane}
+Sprawozdanie obejmuje Zadanie 1 część I oraz część II.
+Kod i wyniki znajdują się w repozytorium:
+\url{https://github.com/JanP2002/NLP_Lab}.
+
+Użyto zdaniowej wersji korpusu PolEmo~2.0 (recenzje hoteli, lekarzy, uczelni i produktów; etykiety
+POZ, NEG, NEU, AMB). Po usunięciu \corpusDup{} powtórzeń zostało \corpusUnique{} zdań (średnio \corpusMean{}
+tokenów); rozkład etykiet jest niezrównoważony (NEG 36,8\%, POZ 26,7\%, NEU 24,5\%, AMB 12,0\%).
+Do anotacji wylosowano dwie rozłączne próbki po 100 zdań (po 25 z każdej klasy etykiety korpusu,
+zdania 5--40 tokenów, bez zdań przykładowych z wytycznych); anotatorom pokazano je bez etykiet korpusu.
+
+% -----------------------------------------------------------------------------
+\section{Część I: anotacja}
+
+\subsection{Procedura}
+
+Do realizacji zadania, zastosowana została procedura 2+1: dwie osoby (A1, A2) anotowały niezależnie całą próbkę w arkuszach,
+a trzecia osoba (superanotator) rozstrzygała zdania, w których ich etykiety się różniły.
+Anotacja miała dwa poziomy: \emph{etykieta zdania} (POZ, NEG, NEU, AMB) oraz \emph{etykiety słów}:
+wyrażenia nacechowane (WYR\_POZ, WYR\_NEG) i modyfikatory (WZM -- wzmocnienie, OSL -- osłabienie,
+ODW -- odwrócenie). Anotatorzy pracowali niezależnie, w osobnej kolejności zdań, według krótkiej
+notatki z wytycznymi (wersja~1).
+
+\subsection{Zgodność anotatorów i porównanie iteracji}\label{sec:iter}
+
+Zgodność liczono kappą Cohena i kappą Fleissa (przy dwóch anotatorach niemal identyczne) na poziomie
+zdań, wszystkich słów oraz słów zaznaczonych, czyli takich, którym co najmniej jedna osoba nadała etykietę;
+Przedziały ufności zostały wyznaczone bootstrapem po zdaniach. Wyniki obu iteracji zestawia tab.~\ref{tab:compare} i
+rys.~\ref{fig:compare}.
+
+\begin{table}[H]
+\centering\small
+\resizebox{\textwidth}{!}{\input{generated/comparison}}
+\caption{Zgodność A1--A2 w iteracji~1 (wytyczne v1) i iteracji~2 (wytyczne v2); $\Delta=\kappa_2-\kappa_1$ z 95\% przedziałem ufności różnicy.}
+\label{tab:compare}
+\end{table}
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.66\textwidth]{kappa_comparison.png}
+\caption{Kappa Cohena A1--A2 z 95\% przedziałami ufności w obu iteracjach.}
+\label{fig:compare}
+\end{figure}
+
+W iteracji~1 zgodność na zdaniach wyniosła \kSentRawI{} ($\kappa=\kSentCohenI$, znaczna), na wszystkich słowach
+$\kappa=\kTokCohenI$, ale na słowach zaznaczonych tylko $\kappa=\kMarkCohenI$ (umiarkowana): anotatorzy
+zgadzali się co do oceny zdania lepiej niż co do tego, \emph{które} słowa ją niosą. Najsłabiej zgodne były
+etykiety OSL i WYR\_NEG oraz klasa zdań NEG.
+
+\textbf{Wytyczne v2.} Analiza \nConfI{} rozbieżnych zdań (najczęściej NEG/NEU) wskazała kilka powtarzających
+się problemów, na które odpowiedziano w wersji~2: (i) \emph{fakt a opinia} -- sam opis niekorzystnego zdarzenia
+bez oceny to NEU; (ii) negatywna ocena jednego aspektu może wystarczyć do NEG; (iii) brak wyraźnej oceny to NEU;
+(iv) słowa zależne od kontekstu (\emph{może}, \emph{tylko}, \emph{mało}, \emph{słabo}) nie przesądzają o wydźwięku;
+(v) słowa oznacza się według funkcji w zdaniu oraz doprecyzowano AMB, negację i ironię.
+
+\textbf{Wynik iteracji 2.} Zgodność \emph{nie wzrosła}: $\kappa$ na zdaniach spadła z \kSentCohenI{} do
+\kSentCohenII{}, na wszystkich słowach z \kTokCohenI{} do \kTokCohenII{}, na słowach zaznaczonych z
+\kMarkCohenI{} do \kMarkCohenII{}. Wartości pozostają w tych samych kategoriach, a przedziały ufności różnic
+obejmują zero, więc przy 100 zdaniach nie ma podstaw do mówienia o istotnej poprawie ani pogorszeniu.
+W podziale na klasy (tab.~\ref{tab:perclass}) zgodność wzrosła dla NEG (z 0,661 do 0,805) i dla fragmentów WYR\_NEG
+(0,604 $\to$ 0,698) oraz OSL (0,264 $\to$ 0,468), a spadła dla POZ i AMB (AMB ma tylko 6--10 zdań na osobę, więc ta
+wartość jest mało wiarygodna). Konflikty NEG/NEU stały się rzadsze (9 $\to$ 3), zgodnie z intencją reguły o fakcie
+i opinii, ale przybyło konfliktów POZ/NEU (4 $\to$ 7) i pojawiły się NEU/AMB (0 $\to$ 3). Może to być spowodowane tym, że nowe reguły przesunęły granicę ku NEU, 
+ale kryterium „brak wyraźnej oceny'' bywa nadal rozumiane
+różnie; na wynik wpływają też inna próbka i mała liczba zdań.
+
+\begin{table}[H]
+\centering\small
+\input{generated/perclass_sent}
+\caption{Kappa Cohena dla każdej klasy zdań osobno (klasa kontra reszta); A1/A2 to liczby zdań danej klasy.}
+\label{tab:perclass}
+\end{table}
+
+\subsection{Rozstrzygnięcie konfliktów i zbiór finalny}
+
+Superanotator rozstrzygnął \nConfI{} (iteracja~1) i \nConfII{} (iteracja~2) rozbieżnych zdań; pozostałe zachowały
+wspólną etykietę. Powstał zbiór 200 zdań z uzgodnioną etykietą (\emph{final}): POZ 54, NEG 46, NEU 83, AMB
+\finalAmbN{}. Zgodność z etykietą korpusu wynosi \goldFinalPct{} (tab.~\ref{tab:goldfinal}); największa różnica to
+zdania z etykietą korpusu AMB, z których \goldAmbToNeu{} z \goldAmbN{} uznano za NEU. Kierunek zmian jest zgodny z
+nowymi regułami (brak wyraźnej oceny to NEU); etykieta \emph{final} dotyczy zdania ocenianego bez kontekstu recenzji,
+a etykieta korpusu pochodzi z anotacji korpusu, więc różnice nie muszą oznaczać błędu żadnej ze stron.
+
+\begin{table}[H]
+\centering\small
+\input{generated/gold_vs_final}
+\caption{Etykieta korpusu (gold) a etykieta uzgodniona (final), 200 zdań.}
+\label{tab:goldfinal}
+\end{table}
+
+\subsection{Pozostała część zbioru i statystyki opisowe}
+
+Pozostała część zbioru nie została zanotowana. W ramach zadania zanotowano dwie próbki po 100 zdań (łącznie 200 zdań
+z uzgodnioną etykietą). Zgodność w iteracji~2 ($\kappa$ Cohena na zdaniach 0,710, znaczna) pozwalałaby przejść do
+anotacji reszty zbioru, ale nie została ona wykonana.
+
+Statystyki opisowe uzyskanego zbioru 200 zdań podają tab.~\ref{tab:final} i~\ref{tab:tokcounts}. W obu próbkach
+dominuje NEU, a AMB jest rzadkie, przy czym w próbce~2 jeszcze rzadsze (6 zdań wobec 11). Długość zdań jest podobna
+(średnio 17,1 i 16,1 tokenów, łącznie 16,6; zakres 5--36). Wśród słów z etykietą przeważają wyrażenia nacechowane
+(WYR\_POZ i WYR\_NEG), a modyfikatory są rzadsze; OSL występuje tylko kilka razy na próbkę. Liczby oznaczonych słów
+różnią się nieco między anotatorami, co odpowiada umiarkowanej zgodności na słowach zaznaczonych.
+
+\begin{table}[H]
+\centering\small
+\begin{tabular}{lrrrrrrrr}
+\toprule
+Iteracja & POZ & NEG & NEU & AMB & razem & śr. tokenów & min & maks \\
+\midrule
+1 & 27 & 22 & 40 & 11 & 100 & 17,1 & 5 & 36 \\
+2 & 27 & 24 & 43 & 6 & 100 & 16,1 & 5 & 35 \\
+\midrule
+razem & 54 & 46 & 83 & 17 & 200 & 16,6 & 5 & 36 \\
+\bottomrule
+\end{tabular}
+\caption{Zbiór uzgodniony: rozkład etykiet zdań i długość zdań (liczba tokenów) w próbkach.}
+\label{tab:final}
+\end{table}
+
+\begin{table}[H]
+\centering\small
+\begin{tabular}{lrrrr}
+\toprule
+Etykieta słowa & iter.~1: A1 & iter.~1: A2 & iter.~2: A1 & iter.~2: A2 \\
+\midrule
+WYR\_POZ & 88 & 77 & 95 & 77 \\
+WYR\_NEG & 54 & 53 & 56 & 43 \\
+WZM & 29 & 31 & 19 & 16 \\
+OSL & 9 & 6 & 11 & 6 \\
+ODW & 17 & 15 & 20 & 23 \\
+\bottomrule
+\end{tabular}
+\caption{Liczba słów z daną etykietą fragmentu u każdego anotatora (przed rozstrzygnięciem).}
+\label{tab:tokcounts}
+\end{table}
+
+% -----------------------------------------------------------------------------
+\section{Część II: Word Embeddings}\label{sec:we}
+
+\todo{Sekcja w przygotowaniu (3 pkt): osadzenia słów z co najmniej dwóch modeli (Word2Vec, fastText, GloVe),
+wizualizacja t-SNE słów z etykietami z anotacji, listy $k$ najbliższych słów i ich porównanie między modelami,
+krótka dyskusja oraz odpowiedzi na cztery pytania pomocnicze.}
+\inputorTodo{we_models}{opis modeli i pokrycia słownika}
+\inputorTodo{we_tsne}{wykres t-SNE słów}
+\inputorTodo{we_knn}{listy najbliższych sąsiadów}
+
+% -----------------------------------------------------------------------------
+\section{Część II: Text Embeddings}\label{sec:te}
+
+\subsection{Osadzenia zdań i wizualizacja t-SNE}
+
+Wektory zdań policzone zostały dla 200 zdań z obu próbek, które mają etykiety korpusu, A1, A2 i uzgodnioną.
+Użyto dwóch modeli: \textbf{fastText} (model słów dla polskiego z CLARIN-PL, 100 wymiarów; wektor zdania to
+średnia wektorów jego słów) oraz \textbf{Universal Sentence Encoder} (wersja wielojęzyczna, 512 wymiarów,
+koduje całe zdanie). Jako punkt odniesienia dodany został \textbf{TF-IDF} (widzi tylko wspólne słowa).
+
+Wizualizacje t-SNE (rys.~\ref{fig:tsne-ft}, \ref{fig:tsne-use}). Kolor oznacza etykietę, kształt punktu iterację.
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.95\textwidth]{tsne_fasttext.png}
+\caption{t-SNE osadzeń fastText: kolor wg etykiety uzgodnionej (lewy) i korpusu (prawy).}
+\label{fig:tsne-ft}
+\end{figure}
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.95\textwidth]{tsne_use.png}
+\caption{t-SNE osadzeń Universal Sentence Encoder.}
+\label{fig:tsne-use}
+\end{figure}
+
+\textbf{Obserwacje.} W żadnym modelu klasy wydźwięku nie tworzą rozłącznych skupisk: punkty POZ, NEG, NEU i AMB są
+w dużej mierze wymieszane, a kolorowanie wg etykiety uzgodnionej i korpusu daje podobny obraz. 
+Zgadza się to z miarami ilościowymi (pytanie~5): układ punktów wydaje się odzwierciedlać raczej treść zdań niż ich wydźwięk.
+
+\subsection{Analiza osadzeń i odpowiedzi na pytania}
+
+Odpowiedzi opierają się na ręcznie napisanych parach kontrolnych (parafrazy, przeciwny sens przy podobnych słowach,
+ten sam sens w różnej długości, pary niepowiązane; tab.~\ref{tab:probe-means}), na parach zdań z korpusu oraz na
+klasyfikatorze wydźwięku uczonym na samych osadzeniach. Przy tak małych zestawach wnioski mają charakter
+ilustracji, a nie statystyki.
+
+\begin{table}[H]
+\centering\small
+\input{generated/emb_probe_means}
+\caption{Średnie podobieństwo kosinusowe par kontrolnych według kategorii.}
+\label{tab:probe-means}
+\end{table}
+
+\textbf{1. Czy są zdania uznane za podobne, ale różniące się znaczeniem?} Tak. Pary o przeciwnym sensie i podobnych
+słowach mają wyższe podobieństwo niż prawdziwe parafrazy: 0,859 wobec 0,746 w fastText i 0,794 wobec 0,492 w USE;
+np.\ „miła''--„niemiła'' daje 0,978 i 0,973. W korpusie najbliższe pary POZ--NEG w fastText (0,90--0,94) dotyczą tego
+samego tematu (lekarz, pacjent). W fastText negacja „nie'' ma mały wpływ na średnią wektorów słów, a USE także wyraźnie
+nie rozróżnia takich par. Modele kodują więc głównie temat i słownictwo, nie wydźwięk.
+
+\textbf{2. Czy są zdania podobne znaczeniowo, a uznane za odległe, bo użyto innych słów?} Tak. Parafrazy mają niskie
+podobieństwo: 0,746 (fastText), 0,492 (USE), 0,376 (TF-IDF); np.\ „Obsługa była bardzo miła i pomocna'' i „Personel okazał
+się niezwykle uprzejmy i życzliwy'' dają 0,681, 0,340 i 0,284. TF-IDF zawodzi najbardziej, bo widzi tylko wspólne
+słowa. USE ma niskie wartości, ale wyraźnie odróżnia parafrazy od zdań niepowiązanych (0,492 wobec 0,111), natomiast
+fastText uznaje za bliskie także zdania niepowiązane (0,506), bo wszystkie zdania są w nim do siebie podobne. W parach
+z korpusu USE trafnie zbliżył zdania o czasie („2 miesiące temu'' i „od dwóch miesięcy''), ale pomylił dwie krótkie
+oceny o przeciwnym wydźwięku.
+
+\textbf{3. Czy zdania o różnej długości i podobnym sensie są traktowane podobnie?} Nie w pełni. Krótkie zdanie i jego
+długa wersja o tym samym sensie mają podobieństwo 0,604 (fastText), 0,191 (USE) i 0,389 (TF-IDF), czyli mniej niż
+parafrazy, a w fastText tylko niewiele więcej niż zdania niepowiązane (0,506). Np.\ „Polecam .'' i długa pochwała hotelu
+mają 0,662 w fastText i 0,078 w USE. Długie zdanie wnosi dużo dodatkowej treści, a w fastText uśrednianie zbliża je do
+przeciętnego wektora korpusu, więc podobne wydaje się niemal do wszystkiego. Zgodny wydźwięk nie wystarcza, by modele
+uznały takie zdania za podobne.
+
+\textbf{4. Czy długość zdania wpływa na podobieństwo i „wyrazistość'' wektora?} Tak. W fastText długie zdania (21--36
+tokenów) są bliższe średniemu wektorowi korpusu niż krótkie (5--11 tokenów): podobieństwo do środka rośnie z 0,763 do
+0,893, a średnie podobieństwo do innych zdań z 0,624 do 0,731 (korelacja rangowa 0,588); jednocześnie maleje długość
+wektora (30,3 $\to$ 27,8). Wynika to z uśredniania wektorów słów: w długim zdaniu wkłady się znoszą, a wektor staje się
+mniej wyrazisty. W USE efekt jest słabszy (korelacja 0,318). Wysokie podobieństwo w fastText może więc wynikać z samej
+długości zdań, a nie z podobnego sensu.
+
+\textbf{5. Czy osadzenia nadają się do anotowanego zadania (wydźwięk zdania)?} Nie. Klasyfikator uczony na samych
+osadzeniach (tab.~\ref{tab:classif}) osiąga dla etykiet uzgodnionych accuracy \accFasttext{} (fastText) i \accUse{} (USE)
+przy bazie większościowej \baseUse{} (zawsze NEU), czyli przewaga wynosi tylko 0,09--0,10. F1-Macro jest niskie
+(\foneFasttext{} i \foneUse{}), silhouette ujemne lub bliskie zeru (\silFasttext{} i \silUse{}), co oznacza brak
+skupisk według wydźwięku. Klasyfikator wybiera głównie NEU (rozpoznaje je w 88--92\%), klasę NEG rozpoznaje rzadko
+(9--15\%), a AMB wcale (w zbiorze jest tylko 17 takich zdań). Na zbalansowanych etykietach korpusu USE wypada lepiej
+niż fastText (macro-F1 0,464 wobec 0,388), ale nadal słabo. Osadzenia mogłyby co najwyżej służyć jako cecha pomocnicza.
+
+\begin{table}[H]
+\centering\small
+\resizebox{\textwidth}{!}{\input{generated/emb_classif}}
+\caption{Klasyfikacja wydźwięku zdania na samych osadzeniach (regresja logistyczna, 5-krotna walidacja krzyżowa).
+„Baza większ.'' to accuracy klasyfikatora zawsze wybierającego najliczniejszą klasę, „losowy'' to losowanie zgodne
+z rozkładem klas (odniesienie dla kNN-10, czyli odsetka sąsiadów tej samej klasy).}
+\label{tab:classif}
+\end{table}
+
+% -----------------------------------------------------------------------------
+\section{Wnioski}
+
+\begin{itemize}
+  \item Zgodność anotatorów jest znaczna na poziomie zdań, a umiarkowana dla zaznaczonych słów. Nowe wytyczne nie
+        poprawiły jej mierzalnie (różnice mieszczą się w przedziałach ufności); poprawa dotyczy głównie klasy NEG
+        oraz słów WYR\_NEG i OSL.
+  \item Rozstrzygnięcie konfliktów przesunęło część zdań z etykiet AMB, NEG i POZ korpusu do NEU, zgodnie z regułą
+        „fakt a opinia''; zbiór uzgodniony jest niezrównoważony (dominuje NEU, AMB jest rzadkie).
+  \item Testowane osadzenia zdań kodują głównie temat i słownictwo, a słabo wydźwięk: zdania o przeciwnym sensie bywają
+        bliższe niż parafrazy, a klasyfikator na samych osadzeniach niewiele przewyższa bazę większościową.
+  \item Porównując podobieństwa, trzeba uwzględniać długość zdań (uśrednianie zbliża długie zdania do wektora
+        średniego) oraz skalę modelu (USE ma niższe wartości niż fastText).
+\end{itemize}
+
+\todo{wnioski z części Word Embeddings.}
+
+\section*{Wykorzystanie narzędzi opartych na modelach językowych}
+
+Anotatorzy A1 i A2 nie korzystali z modeli językowych (zgodnie z wytycznymi).
+W pozostałych częściach pracy korzystano z asystenta opartego na modelu językowym (Claude, Anthropic), przy następujących zadaniach:
+napisanie kodu i notebooka do osadzeń zdań (fastText, Universal Sentence Encoder, TF-IDF, t-SNE, klasyfikator, miary jakości;
+\texttt{src/text\_embeddings.py}, \texttt{notebooks/Text\_Embeddings.ipynb}); przygotowanie placeholderów na odpowiedzi
+na pytania pomocnicze do części Text Embeddings oraz szablonu sprawozdania w \LaTeX{} wraz ze skryptem generującym
+tabele i rysunki z plików repozytorium.
+Generowane części zostały sprawdzone przez autorów, a ostateczne decyzje zatwierdzili autorzy.
+
+\begin{thebibliography}{9}
+\bibitem{cohen} J.~Cohen, \emph{A coefficient of agreement for nominal scales}, Educational and Psychological Measurement 20(1), 1960.
+\bibitem{fleiss} J.~L.~Fleiss, \emph{Measuring nominal scale agreement among many raters}, Psychological Bulletin 76(5), 1971.
+\bibitem{landis} J.~R.~Landis, G.~G.~Koch, \emph{The measurement of observer agreement for categorical data}, Biometrics 33(1), 1977.
+\bibitem{polemo} J.~Kocoń, P.~Miłkowski, M.~Zaśko-Zielińska, \emph{Multi-level sentiment analysis of PolEmo~2.0}, CoNLL 2019.
+\bibitem{fasttext} P.~Bojanowski, E.~Grave, A.~Joulin, T.~Mikolov, \emph{Enriching word vectors with subword information}, TACL 5, 2017.
+\bibitem{use} D.~Cer et al., \emph{Universal Sentence Encoder}, arXiv:1803.11175, 2018.
+\end{thebibliography}
+
+\end{document}
