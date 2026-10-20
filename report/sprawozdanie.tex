@@ -28,6 +28,7 @@
 \newcommand{\inputorTodo}[2]{\IfFileExists{generated/#1.tex}{\input{generated/#1}}{\todo{#2}}}
 
 \input{generated/macros}
+\IfFileExists{generated/we_macros.tex}{\input{generated/we_macros}}{}  % Word Embeddings: python -m src.word_report
 
 \title{Zadanie 1: Korpusy anotowane oraz osadzenia słów i tekstów\\[0.3em]
 \large PolEmo 2.0 -- anotacja, zgodność anotatorów, osadzenia zdań}
@@ -175,12 +176,13 @@ ODW & 17 & 15 & 20 & 23 \\
 % -----------------------------------------------------------------------------
 \section{Część II: Word Embeddings}\label{sec:we}
 
-\todo{Sekcja w przygotowaniu (3 pkt): osadzenia słów z co najmniej dwóch modeli (Word2Vec, fastText, GloVe),
-wizualizacja t-SNE słów z etykietami z anotacji, listy $k$ najbliższych słów i ich porównanie między modelami,
-krótka dyskusja oraz odpowiedzi na cztery pytania pomocnicze.}
+W tej części porównano dwa modele word2vec różniące się korpusem uczącym: ogólny model IPI PAN i model wytrenowany
+na recenzjach PolEmo. Kod: \texttt{src/word\_embeddings.py} (osadzenia), \texttt{src/word\_tsne.py} (t-SNE),
+\texttt{src/word\_neighbours.py} (najbliższe słowa), \texttt{src/word\_report.py} (tabele i liczby do sprawozdania).
 \inputorTodo{we_models}{opis modeli i pokrycia słownika}
 \inputorTodo{we_tsne}{wykres t-SNE słów}
 \inputorTodo{we_knn}{listy najbliższych sąsiadów}
+\IfFileExists{sections/we_dyskusja.tex}{\input{sections/we_dyskusja}}{\todo{dyskusja wyników i odpowiedzi na cztery pytania pomocnicze}}
 
 % -----------------------------------------------------------------------------
 \section{Część II: Text Embeddings}\label{sec:te}
@@ -286,7 +288,16 @@ z rozkładem klas (odniesienie dla kNN-10, czyli odsetka sąsiadów tej samej kl
         średniego) oraz skalę modelu (USE ma niższe wartości niż fastText).
 \end{itemize}
 
-\todo{wnioski z części Word Embeddings.}
+\begin{itemize}
+  \item Osadzenia word2vec dobrze pokrywają słownictwo korpusu (model IPI PAN zna \weCovTypesIpi\% słów) i oddają
+        znaczenie ogólne, ale słabo wydźwięk: antonimy leżą blisko, a słowa pozytywne i negatywne nie tworzą skupisk
+        (sylwetka \weSilIpi{}); wydźwięk da się jednak częściowo odczytać prostym klasyfikatorem (trafność \weProbeIpi{}).
+  \item Model ogólny i model uczony na recenzjach dają niemal rozłączne listy najbliższych słów (\weOverlap\% wspólnych
+        sąsiadów): pierwszy relacje słownikowe (synonimy, antonimy), drugi skojarzenia tematyczne, ale z szumem dla
+        rzadkich słów.
+  \item Do zadań związanych z wydźwiękiem potrzebna jest adaptacja do dziedziny i wiedza o wydźwięku (np. retrofitting)
+        albo modele kontekstowe.
+\end{itemize}
 
 \section*{Wykorzystanie narzędzi opartych na modelach językowych}
 
@@ -296,15 +307,22 @@ napisanie kodu i notebooka do osadzeń zdań (fastText, Universal Sentence Encod
 \texttt{src/text\_embeddings.py}, \texttt{notebooks/Text\_Embeddings.ipynb}); przygotowanie placeholderów na odpowiedzi
 na pytania pomocnicze do części Text Embeddings oraz szablonu sprawozdania w \LaTeX{} wraz ze skryptem generującym
 tabele i rysunki z plików repozytorium.
+W części Word Embeddings: napisanie kodu do osadzeń słów, wizualizacji t-SNE, list najbliższych słów i ich porównania
+oraz generowania tabel do sprawozdania (\texttt{src/word\_embeddings.py}, \texttt{src/word\_tsne.py},
+\texttt{src/word\_neighbours.py}, \texttt{src/word\_report.py}), a także szkicu dyskusji
+(\texttt{report/sections/we\_dyskusja.tex}).
 Generowane części zostały sprawdzone przez autorów, a ostateczne decyzje zatwierdzili autorzy.
 
-\begin{thebibliography}{9}
+\begin{thebibliography}{99}
 \bibitem{cohen} J.~Cohen, \emph{A coefficient of agreement for nominal scales}, Educational and Psychological Measurement 20(1), 1960.
 \bibitem{fleiss} J.~L.~Fleiss, \emph{Measuring nominal scale agreement among many raters}, Psychological Bulletin 76(5), 1971.
 \bibitem{landis} J.~R.~Landis, G.~G.~Koch, \emph{The measurement of observer agreement for categorical data}, Biometrics 33(1), 1977.
 \bibitem{polemo} J.~Kocoń, P.~Miłkowski, M.~Zaśko-Zielińska, \emph{Multi-level sentiment analysis of PolEmo~2.0}, CoNLL 2019.
 \bibitem{fasttext} P.~Bojanowski, E.~Grave, A.~Joulin, T.~Mikolov, \emph{Enriching word vectors with subword information}, TACL 5, 2017.
 \bibitem{use} D.~Cer et al., \emph{Universal Sentence Encoder}, arXiv:1803.11175, 2018.
+\bibitem{word2vec} T.~Mikolov, K.~Chen, G.~Corrado, J.~Dean, \emph{Efficient estimation of word representations in vector space}, arXiv:1301.3781, 2013.
+\bibitem{dsmodels} Instytut Podstaw Informatyki PAN, \emph{Modele dystrybucyjne dla języka polskiego (word2vec; pełny NKJP i polska Wikipedia z końca 2016~r.)}, \url{http://dsmodels.nlp.ipipan.waw.pl} (dostęp: 20.10.2026).
+\bibitem{retrofit} M.~Faruqui, J.~Dodge, S.~K.~Jauhar, C.~Dyer, E.~Hovy, N.~A.~Smith, \emph{Retrofitting word vectors to semantic lexicons}, NAACL-HLT 2015.
 \end{thebibliography}
 
 \end{document}
