@@ -1,0 +1,11 @@
+# Część II – Text Embeddings (dodatkowo do requirements.txt). Działa na Windows / Linux / macOS.
+-r requirements.txt
+plotly>=5.20
+scipy>=1.10
+gensim>=4.3.3           # fastText (load_facebook_vectors) i Word2Vec (KeyedVectors)
+huggingface_hub>=0.23   # automatyczne pobranie fastText kgr10
+jupyter>=1.0
+nbformat>=5.9
+# Universal Sentence Encoder: wielojęzyczny destylat mUSE (distiluse-base-multilingual-cased-v1).
+# Ściąga PyTorch (ok. kilkaset MB). Kod używa go automatycznie, gdy oryginalny USE z TF Hub jest niedostępny.
+sentence-transformers>=2.7

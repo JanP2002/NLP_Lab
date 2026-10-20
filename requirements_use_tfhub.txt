@@ -1,0 +1,5 @@
+# OPCJONALNE: oryginalny USE z TF Hub. Tylko Linux / macOS / WSL / Google Colab.
+# Na Windows tensorflow_text nie ma wersji do zainstalowania (pip: "No matching distribution").
+tensorflow>=2.15
+tensorflow_hub>=0.16
+tensorflow_text>=2.15
