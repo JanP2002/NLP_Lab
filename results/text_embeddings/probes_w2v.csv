@@ -1,0 +1,13 @@
+﻿kategoria,zdanie_a,zdanie_b,w2v,w2v_polemo
+parafraza,Obsługa była bardzo miła i pomocna .,Personel okazał się niezwykle uprzejmy i życzliwy .,0.65,0.725
+parafraza,Pokój był czysty i dobrze wyposażony .,"W pokoju panowała czystość , a wyposażenie było kompletne .",0.696,0.569
+parafraza,Lekarz dokładnie mnie zbadał i wszystko wytłumaczył .,Doktor przeprowadził staranne badanie i cierpliwie objaśnił wyniki .,0.784,0.806
+"przeciwny sens, podobne słowa",Polecam ten hotel każdemu .,Nie polecam tego hotelu nikomu .,0.742,0.699
+"przeciwny sens, podobne słowa",Jedzenie było smaczne .,Jedzenie było niesmaczne .,0.931,0.968
+"przeciwny sens, podobne słowa",Obsługa była bardzo miła .,Obsługa była bardzo niemiła .,0.973,0.965
+"przeciwny sens, te same słowa","Obsługa była świetna , ale pokój fatalny .","Pokój był świetny , ale obsługa fatalna .",0.95,0.927
+"ten sam sens, różna długość",Polecam .,"Szczerze polecam ten hotel wszystkim znajomym i rodzinie , bo spędziliśmy tam naprawdę udany tydzień .",0.497,0.6
+"ten sam sens, różna długość",Bardzo słaby serwis .,"Obsługa w tym miejscu była naprawdę bardzo słaba i musieliśmy długo czekać na wszystko , co zamówiliśmy .",0.575,0.691
+"ten sam sens, różna długość",Wszystko w porządku .,"Pobyt przebiegł bez żadnych problemów , wszystko było tak , jak należy , i nie mamy żadnych zastrzeżeń .",0.663,0.684
+kontrola: niepowiązane,Obsługa była bardzo miła .,Dojazd autostradą zajmuje około dwóch godzin .,0.486,0.343
+kontrola: niepowiązane,Jedzenie było smaczne .,W pokoju nie działała klimatyzacja .,0.369,0.518

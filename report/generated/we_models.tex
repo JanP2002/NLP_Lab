@@ -1,0 +1,30 @@
+\subsection{Modele i pokrycie słownika}\label{sec:we-models}
+
+Osadzenia policzono dla wszystkich \weNWords{} słów (\weNTokens{} wystąpień; bez interpunkcji i samych liczb)
+z \weNSentences{} zaanotowanych zdań. Porównano dwa modele word2vec~\cite{word2vec} (skip-gram, 100 wymiarów),
+które różnią się korpusem uczącym:
+\begin{itemize}
+  \item \textbf{IPI PAN} -- gotowy model \texttt{nkjp+wiki-forms-all-100-skipg-ns}~\cite{dsmodels}, uczony na pełnym
+        Narodowym Korpusie Języka Polskiego i polskiej Wikipedii; wczytano \weVocabIpi{} najczęstszych form;
+  \item \textbf{PolEmo} -- model wytrenowany przez nas w bibliotece gensim na wszystkich \wePolemoSentences{} zdaniach
+        PolEmo (\wePolemoWords{} słów; słowa występujące co najmniej 3 razy, 15 epok); słownik \weVocabPol{} słów.
+\end{itemize}
+Wektor słowa wyszukiwano kolejno w formie małymi literami, w oryginalnej pisowni i z wielką literą na początku.
+
+\begin{table}[H]
+\centering\small
+\resizebox{\textwidth}{!}{\begin{tabular}{lrrrrrrrr}
+\toprule
+Model & słowa & wystąpienia & słowa zaanotowane & WYR\_POZ ($n$=145) & WYR\_NEG ($n$=86) & WZM ($n$=19) & OSL ($n$=13) & ODW ($n$=4) \\
+\midrule
+IPI PAN & 94{,}6\% & 97{,}1\% & 94{,}9\% & 94\% & 91\% & 100\% & 100\% & 100\% \\
+PolEmo & 85{,}2\% & 92{,}0\% & 83{,}7\% & 86\% & 65\% & 95\% & 100\% & 100\% \\
+\bottomrule
+\end{tabular}}
+\caption{Pokrycie słownika: odsetek słów (wystąpień) zaanotowanego korpusu, dla których model ma wektor.
+„Słowa zaanotowane'' -- z co najmniej jedną anotacją różną od O; kolumny etykiet -- słowa o danej etykiecie
+(najczęstsza etykieta anotacji, jeśli co najmniej połowa anotacji słowa jest różna od O).}
+\label{tab:we-coverage}
+\end{table}
+
+Brakujące wektory w modelu IPI PAN to głównie zapisy bez polskich znaków (\emph{lazience} zamiast \emph{łazience}), formy z cyframi (\emph{2osobowym}), słowa rzadkie (\emph{acellularne}).

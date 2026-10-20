@@ -1,0 +1,86 @@
+% Część II, Text Embeddings: uśrednione wektory Word2Vec. Liczby: makra \teW... z generated/te_w2v_macros.tex
+% (python -m src.text_analysis, python -m src.text_report). Tekst pisany ręcznie -- przy zmianie wyników sprawdzić wnioski.
+\subsection{Uśrednione wektory Word2Vec}\label{sec:te-w2v}
+
+Dodatkowo zbadano osadzenia zdań jako \textbf{średnią wektorów słów Word2Vec} dla dwóch modeli z części Word
+Embeddings (sekcja~\ref{sec:we-models}): ogólnego modelu IPI PAN i modelu wytrenowanego na recenzjach PolEmo
+(100 wymiarów). Słowa bez wektora pomijano; wektor ma średnio \teWCovIpi\% słów zdania w modelu IPI PAN
+i \teWCovPol\% w modelu PolEmo, a żadne zdanie nie zostało bez wektora. Analizę wykonano tymi samymi funkcjami, parami
+kontrolnymi i miarami co dla fastText i USE (\texttt{src/text\_analysis.py}), więc tabele porównują pięć modeli.
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.9\textwidth]{tsne_w2v.png}
+\caption{t-SNE osadzeń zdań: uśrednione Word2Vec IPI PAN; kolor wg etykiety uzgodnionej (lewy) i korpusu (prawy).}
+\label{fig:tsne-w2v}
+\end{figure}
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.9\textwidth]{tsne_w2v_polemo.png}
+\caption{t-SNE osadzeń zdań: uśrednione Word2Vec PolEmo.}
+\label{fig:tsne-w2v-polemo}
+\end{figure}
+
+Na wykresach t-SNE (rys.~\ref{fig:tsne-w2v} i~\ref{fig:tsne-w2v-polemo}) klasy są wymieszane, tak jak dla fastText
+i USE; w modelu PolEmo widać jedynie skupisko części zdań NEU.
+
+\begin{table}[H]
+\centering\small
+\input{generated/te_w2v_probes}
+\caption{Pary kontrolne (tab.~\ref{tab:probe-means}): średnie podobieństwo kosinusowe dla uśrednionego Word2Vec
+i modeli z poprzednich podrozdziałów.}
+\label{tab:te-w2v-probes}
+\end{table}
+
+\textbf{1. Zdania uznane za podobne, a różne znaczeniowo.} Tak, tak samo jak w fastText. Pary o przeciwnym sensie
+i podobnych słowach są bliższe niż parafrazy (\teWOppIpi{} wobec \teWParaIpi{} w modelu IPI PAN,
+tab.~\ref{tab:te-w2v-probes}); „Obsługa była bardzo miła'' i „\ldots niemiła'' mają \teWMilaIpi. W korpusie wśród
+1\% najbardziej podobnych par zdań pary POZ--NEG stanowią \teWTopOppIpi\% (IPI PAN) i \teWTopOppPol\% (PolEmo),
+czyli więcej niż wśród wszystkich par (\teWAllOpp\%), a pary o tej samej etykiecie -- tyle co przypadkiem
+(\teWTopSameIpi\% wobec \teWAllSame\%). Najbliższe pary to długie opinie o lekarzach: o podobieństwie decyduje temat,
+a negacja to tylko jedno słowo w średniej.
+
+\textbf{2. Zdania podobne znaczeniowo, a odległe, bo użyto innych słów.} Częściowo. Parafrazy (\teWParaIpi) są
+wyraźnie bliżej niż zdania niepowiązane (\teWUnrelIpi), bo Word2Vec zna synonimy (\emph{miła}, \emph{uprzejma}), ale
+podobieństwo rośnie ze wspólnymi słowami: korelacja Spearmana z miarą Jaccarda zbiorów słów wynosi \teWJacIpi{}
+(IPI PAN) i \teWJacPol{} (PolEmo), a pary bez wspólnych słów mają średnio \teWNoSharedIpi, wobec \teWSharedIpi{} dla
+par o Jaccardzie powyżej 0{,}1. Np.\ „Ogólnie Czystość i pokoje na 10, atmosfera na 3'' i „Czysto, schludnie,
+bardzo wygodne łóżka'' są w modelu IPI PAN daleko od siebie (\emph{czystość} i \emph{czysto} to dla niego różne
+słowa), a w modelu PolEmo blisko.
+
+\textbf{3. Zdania o różnej długości i podobnym sensie.} Nie w pełni: krótkie zdanie i jego długa wersja mają
+\teWLenIpi{} (IPI PAN) i \teWLenPol{} (PolEmo), mniej niż parafrazy; np.\ „Polecam .'' i długa pochwała hotelu mają
+\teWPolecamIpi{} i \teWPolecamPol. Dodatkowe słowa długiego zdania (hotel, rodzina, tydzień) odciągają jego wektor
+od oceny.
+
+\begin{table}[H]
+\centering\small
+\input{generated/te_w2v_length}
+\caption{Długość zdania a wektor dla uśrednionego Word2Vec: trzy grupy zdań według liczby tokenów (te same co
+w analizie fastText i USE), średnia norma surowego wektora, podobieństwo do centroidu korpusu i do pozostałych zdań.}
+\label{tab:te-w2v-length}
+\end{table}
+
+\textbf{4. Długość zdania a wartości podobieństwa i „wyrazistość'' wektora.} Tak, silniej niż w fastText
+(tab.~\ref{tab:te-w2v-length}). Od zdań krótkich do długich norma wektora maleje (\teWNormShortIpi{} $\to$
+\teWNormLongIpi{} w IPI PAN), podobieństwo do centroidu korpusu rośnie (\teWCentShortIpi{} $\to$ \teWCentLongIpi),
+a korelacja długości ze średnim podobieństwem do innych zdań wynosi \teWSpearmanIpi{} i \teWSpearmanPol{}
+(fastText \teWSpearmanFt). Uśrednianie znosi wkłady słów, więc wektor długiego zdania jest mniej wyrazisty i bliski
+„przeciętnemu zdaniu'' -- dlatego najbliższe pary w korpusie to głównie długie zdania. Pomogłoby ważenie słów
+(rzadsze ważniejsze) i usunięcie wspólnej składowej wszystkich zdań.
+
+\begin{table}[H]
+\centering\small
+\resizebox{\textwidth}{!}{\input{generated/te_w2v_classif}}
+\caption{Klasyfikacja wydźwięku zdania na samych osadzeniach (etykiety uzgodnione; ten sam protokół co
+w tab.~\ref{tab:classif}, baza większościowa \teWBase).}
+\label{tab:te-w2v-classif}
+\end{table}
+
+\textbf{5. Czy osadzenia nadają się do zadania?} Nie samodzielnie (tab.~\ref{tab:te-w2v-classif}). Accuracy wynosi
+\teWAccIpi{} (IPI PAN) i \teWAccPol{} (PolEmo) przy bazie większościowej \teWBase; klasyfikator wybiera głównie NEU
+(czułość \teWRecNeuIpi), NEG rozpoznaje rzadko (\teWRecNegIpi{} i \teWRecNegPol), a AMB wcale. Model PolEmo wypada
+najlepiej z pięciu porównanych (macro-F1 \teWFonePol), ale uczono go na tym samym korpusie recenzji, z którego
+pochodzą zdania. Uśrednione Word2Vec kodują głównie temat; do rozpoznawania wydźwięku potrzebny jest model
+uwzględniający kolejność słów i negację.

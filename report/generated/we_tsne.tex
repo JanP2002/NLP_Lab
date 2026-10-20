@@ -1,0 +1,40 @@
+\subsection{Wizualizacja t-SNE słów}\label{sec:we-tsne}
+
+Rys.~\ref{fig:we-tsne-ipi} i~\ref{fig:we-tsne-pol} pokazują t-SNE (odległość kosinusowa) wszystkich słów z wektorem.
+Wersje interaktywne -- po najechaniu na punkt widać słowo, jego etykietę, liczbę anotacji każdej etykiety i rozkład
+etykiet zdań; lista rozwijana zmienia kolorowanie -- są w repozytorium
+(\texttt{results/word\_embeddings/tsne\_words\_*.html}). Ponieważ t-SNE zniekształca odległości, grupowanie
+sprawdzono też w oryginalnej przestrzeni (tab.~\ref{tab:we-separation}).
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.95\textwidth]{tsne_words_w2v_all.png}
+\caption{t-SNE słów -- word2vec IPI PAN. Kolor: etykieta słowa (lewy) i dominująca etykieta zdań, w których słowo
+wystąpiło (prawy); wielkość punktu rośnie z liczbą wystąpień, słowa bez etykiety są szarym tłem.}
+\label{fig:we-tsne-ipi}
+\end{figure}
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.95\textwidth]{tsne_words_w2v_polemo_all.png}
+\caption{t-SNE słów -- word2vec PolEmo. Kolor: etykieta słowa (lewy) i dominująca etykieta zdań, w których słowo
+wystąpiło (prawy); wielkość punktu rośnie z liczbą wystąpień, słowa bez etykiety są szarym tłem.}
+\label{fig:we-tsne-pol}
+\end{figure}
+
+\begin{table}[H]
+\centering\small
+\begin{tabular}{llrrrrrr}
+\toprule
+Model & Etykiety & $n$ & czystość k-NN & losowo & sylwetka & sonda & losowo \\
+\midrule
+IPI PAN & WYR\_POZ / WYR\_NEG & 215 & 0{,}648 & 0{,}536 & 0{,}033 & 0{,}72 & 0{,}50 \\
+IPI PAN & POZ / NEG (zdania) & 622 & 0{,}545 & 0{,}502 & 0{,}004 & 0{,}62 & 0{,}50 \\
+PolEmo & WYR\_POZ / WYR\_NEG & 181 & 0{,}671 & 0{,}571 & 0{,}038 & 0{,}58 & 0{,}50 \\
+PolEmo & POZ / NEG (zdania) & 569 & 0{,}559 & 0{,}504 & 0{,}006 & 0{,}62 & 0{,}50 \\
+\bottomrule
+\end{tabular}
+\caption{Czy etykiety grupują się w przestrzeni osadzeń (100 wymiarów, kosinus). Czystość k-NN -- średni odsetek
+10 najbliższych sąsiadów z tą samą etykietą; „losowo'' -- ta sama miara po przetasowaniu etykiet (1000 razy, $p<0{,}01$
+we wszystkich wierszach). Sonda -- zrównoważona trafność regresji logistycznej (5-krotna walidacja krzyżowa).}
+\label{tab:we-separation}
+\end{table}

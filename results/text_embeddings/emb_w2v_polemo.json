@@ -1,0 +1,7 @@
+{
+  "fingerprint": "5bce9ab14d4f2d1db90f3997d249ccfa",
+  "n": 200,
+  "dim": 100,
+  "label": "Word2Vec (PolEmo) – średnia wektorów słów",
+  "mean_vocab_coverage": 0.9101295471191406
+}

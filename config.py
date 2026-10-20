@@ -30,6 +30,20 @@ RESULTS_DIR = ROOT / "results"
 # --- Zgodność ---------------------------------------------------------------
 BOOTSTRAP = {"n": 2000, "seed": 2026}  # przedziały ufności: losowanie zdań ze zwracaniem
 
+# --- Osadzenia słów (Część II) ------------------------------------------------
+MODELS_DIR = ROOT / "models"  # duże pliki modeli – poza repozytorium (.gitignore)
+W2V = {  # word2vec IPI PAN; ścieżkę można nadpisać zmienną środowiskową W2V_PATH
+    "file": "nkjp+wiki-forms-all-100-skipg-ns.txt.gz",
+    "url": "http://dsmodels.nlp.ipipan.waw.pl/dsmodels/nkjp+wiki-forms-all-100-skipg-ns.txt.gz",
+    "limit": 300_000,  # najczęstsze formy (zalecenie z uwag technicznych)
+}
+W2V_POLEMO = {  # własny word2vec na zdaniach PolEmo (gensim), parametry jak w modelu IPI PAN
+    "vector_size": 100, "sg": 1, "negative": 5, "window": 5, "min_count": 3,
+    "epochs": 15, "seed": 2026, "workers": 1,  # workers=1 → powtarzalny wynik
+}
+FASTTEXT_FILE = "kgr10.plain.skipgram.dim100.neg10.bin"  # zalecenie z uwag technicznych
+WORD_EMB_DIR = RESULTS_DIR / "word_embeddings"
+
 
 def iter_dir(iteration: int) -> Path:
     return ANNOT_DIR / f"iter{iteration}"

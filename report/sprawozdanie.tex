@@ -29,6 +29,7 @@
 
 \input{generated/macros}
 \IfFileExists{generated/we_macros.tex}{\input{generated/we_macros}}{}  % Word Embeddings: python -m src.word_report
+\IfFileExists{generated/te_w2v_macros.tex}{\input{generated/te_w2v_macros}}{}  % Text Embeddings, Word2Vec: python -m src.text_report
 
 \title{Zadanie 1: Korpusy anotowane oraz osadzenia słów i tekstów\\[0.3em]
 \large PolEmo 2.0 -- anotacja, zgodność anotatorów, osadzenia zdań}
@@ -193,6 +194,8 @@ Wektory zdań policzone zostały dla 200 zdań z obu próbek, które mają etyki
 Użyto dwóch modeli: \textbf{fastText} (model słów dla polskiego z CLARIN-PL, 100 wymiarów; wektor zdania to
 średnia wektorów jego słów) oraz \textbf{Universal Sentence Encoder} (wersja wielojęzyczna, 512 wymiarów,
 koduje całe zdanie). Jako punkt odniesienia dodany został \textbf{TF-IDF} (widzi tylko wspólne słowa).
+Uśrednione wektory \textbf{Word2Vec} (dwa modele z części Word Embeddings) opisuje osobno
+podrozdział~\ref{sec:te-w2v}.
 
 Wizualizacje t-SNE (rys.~\ref{fig:tsne-ft}, \ref{fig:tsne-use}). Kolor oznacza etykietę, kształt punktu iterację.
 
@@ -273,6 +276,8 @@ z rozkładem klas (odniesienie dla kNN-10, czyli odsetka sąsiadów tej samej kl
 \label{tab:classif}
 \end{table}
 
+\IfFileExists{sections/te_w2v.tex}{\input{sections/te_w2v}}{}
+
 % -----------------------------------------------------------------------------
 \section{Wnioski}
 
@@ -286,6 +291,10 @@ z rozkładem klas (odniesienie dla kNN-10, czyli odsetka sąsiadów tej samej kl
         bliższe niż parafrazy, a klasyfikator na samych osadzeniach niewiele przewyższa bazę większościową.
   \item Porównując podobieństwa, trzeba uwzględniać długość zdań (uśrednianie zbliża długie zdania do wektora
         średniego) oraz skalę modelu (USE ma niższe wartości niż fastText).
+  \item Uśrednione wektory Word2Vec zachowują się podobnie do fastText: zdania o przeciwnym sensie są bliższe niż
+        parafrazy, a długość zdania silnie zbliża je do wektora średniego (korelacja \teWSpearmanIpi{}). Model uczony
+        na recenzjach PolEmo daje najwyższą accuracy z pięciu modeli (\teWAccPol{}), ale nadal tylko nieco wyższą
+        od bazy większościowej (\teWBase{}).
 \end{itemize}
 
 \begin{itemize}
@@ -311,6 +320,9 @@ W części Word Embeddings: napisanie kodu do osadzeń słów, wizualizacji t-SN
 oraz generowania tabel do sprawozdania (\texttt{src/word\_embeddings.py}, \texttt{src/word\_tsne.py},
 \texttt{src/word\_neighbours.py}, \texttt{src/word\_report.py}), a także szkicu dyskusji
 (\texttt{report/sections/we\_dyskusja.tex}).
+W części Text Embeddings dla uśrednionego Word2Vec: osadzenia zdań, wykresy t-SNE, analiza do pytań pomocniczych
+i generowanie tabel (\texttt{src/text\_analysis.py}, \texttt{src/text\_report.py}) oraz szkic odpowiedzi
+(\texttt{report/sections/te\_w2v.tex}).
 Generowane części zostały sprawdzone przez autorów, a ostateczne decyzje zatwierdzili autorzy.
 
 \begin{thebibliography}{99}

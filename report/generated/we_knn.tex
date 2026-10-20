@@ -1,0 +1,64 @@
+\subsection{Listy najbliższych słów}\label{sec:we-knn}
+
+Dla \weNQueries{} słów z etykietą różną od O, znanych obu modelom, wyznaczono \weK{} najbliższych słów (kosinus;
+tylko słowa z liter, z całego słownika modelu). Listy porównano miarami: odsetek wspólnych sąsiadów (także przy
+wyszukiwaniu tylko wśród \weSharedVocab{} słów znanych obu modelom), korelacja Spearmana podobieństw między słowami
+zapytania w obu modelach (podobieństwo drugiego rzędu; dla całej macierzy $\rho=\weRhoAll$), udział odmian słowa zapytania
+wśród sąsiadów oraz wydźwięk sąsiadów wyznaczony z etykiet korpusu PolEmo: $s=(\#\mathrm{POZ}-\#\mathrm{NEG})/\#$zdań
+ze słowem (co najmniej 5 zdań, próg $\pm 0{,}1$).
+
+\begin{table}[H]
+\centering\small
+\begin{tabular}{lrrrr}
+\toprule
+Etykieta & $n$ & wspólne@10 & wspólne@10 (wspólny słownik) & $\rho$ drugiego rzędu \\
+\midrule
+WYR\_POZ & 125 & 8\% & 11\% & 0{,}32 \\
+WYR\_NEG & 55 & 9\% & 12\% & 0{,}26 \\
+WZM & 18 & 16\% & 18\% & 0{,}24 \\
+OSL & 13 & 8\% & 12\% & 0{,}23 \\
+ODW & 4 & 8\% & 10\% & 0{,}41 \\
+wszystkie & 215 & 9\% & 12\% & 0{,}29 \\
+\bottomrule
+\end{tabular}
+\caption{Zgodność list najbliższych słów: IPI PAN wobec PolEmo (średnie po słowach zapytania).}
+\label{tab:we-knn-overlap}
+\end{table}
+
+\begin{table}[H]
+\centering\small
+\begin{tabular}{lrrr}
+\toprule
+Model & odmiany & WYR\_POZ: zgodny / przeciwny & WYR\_NEG: zgodny / przeciwny \\
+\midrule
+IPI PAN & 13\% & 47\% / 41\% & 67\% / 17\% \\
+PolEmo & 2\% & 59\% / 32\% & 70\% / 20\% \\
+\bottomrule
+\end{tabular}
+\caption{Charakter list: udział odmian słowa zapytania wśród sąsiadów (wspólny początek wyrazu) oraz wydźwięk sąsiadów słów WYR\_POZ i WYR\_NEG (odsetek sąsiadów z oceną $s$).
+Model PolEmo i miara $s$ pochodzą z tego samego korpusu, więc jego wyższa zgodność wydźwięku jest częściowo „z założenia''.}
+\label{tab:we-knn-character}
+\end{table}
+
+\begin{table}[H]
+\centering\small
+\begin{tabular}{llp{5.5cm}p{5.5cm}}
+\toprule
+Słowo & Etykieta & IPI PAN & PolEmo \\
+\midrule
+\emph{miła} & WYR\_POZ & sympatyczna, życzliwa, serdeczna, przyjemna, przemiła & pomocna, przemiła, uprzejma, sympatyczna, profesjonalna \\
+\emph{polecam} & WYR\_POZ & odradzam$^{\otimes}$, polecasz, zalecam$^{\otimes}$, doradzam, radzę$^{\otimes}$ & odradzam$^{\otimes}$, polecamy, polecić, polecę$^{\otimes}$, pragnie \\
+\emph{dobrze} & WYR\_POZ & słabo$^{\otimes}$, świetnie, doskonale, znakomicie, wspaniale & fajnie, ładnie, świetnie, porządnie, estetycznie$^{\otimes}$ \\
+\emph{ok} & WYR\_POZ & około, tys, ponad$^{\otimes}$, blisko, tysięcy$^{\otimes}$ & około, ponad$^{\otimes}$, min$^{\otimes}$, piechotą, prawie$^{\otimes}$ \\
+\emph{brudne} & WYR\_NEG & śmierdzące, cuchnące, dziurawe, gołe, podarte & wykładziny, kafelki, kurz, zniszczone, pleśń \\
+\emph{problem} & WYR\_NEG & dylemat, kłopot, nierozwiązany, aspekt, argument & gorszy, błąd, kulinarnie, zdrowotny, pech \\
+\emph{niestety} & WYR\_NEG & wprawdzie$^{\otimes}$, niemniej, bo, chyba, zresztą & szczęście, przyznać$^{\otimes}$, owszem, prawie, uwierzcie$^{\otimes}$ \\
+\emph{bardzo} & WZM & dość, stosunkowo, niezwykle, niezbyt, zbyt & dość, niezbyt, niesamowicie, dosyć, naprawdę \\
+\emph{trochę} & OSL & troszkę, troszeczkę, ciut, odrobinkę, odrobinę & nieco, troszkę, zwyczajnie, ciągnie, wysłużone \\
+\emph{nie} & O & nigdy, ani, jednak, ale, gdyż & oj, wroce, odpisać, uważasz, niewiem \\
+\bottomrule
+\end{tabular}
+\caption{Pięć najbliższych słów w obu modelach (pełne listy: \texttt{results/word\_embeddings/neighbours\_*.csv},
+\texttt{knn\_summary.md}). $^{\otimes}$ -- wydźwięk sąsiada przeciwny do etykiety słowa zapytania.}
+\label{tab:we-knn-examples}
+\end{table}

@@ -1,0 +1,5 @@
+﻿etykiety,n,accuracy,macro_F1,kNN10_czystosc,losowy_wg_rozkladu,baza_wiekszosciowa,silhouette_cos,acc_minus_baza
+final,200,0.505,0.31,0.329,0.305,0.415,-0.065,0.09
+gold,200,0.44,0.434,0.318,0.25,0.25,-0.047,0.19
+A1,200,0.505,0.312,0.337,0.312,0.43,-0.066,0.075
+A2,200,0.495,0.305,0.333,0.308,0.42,-0.091,0.075

@@ -1,0 +1,148 @@
+{
+  "models": {
+    "w2v": "Word2Vec IPI PAN (nkjp+wiki, formy, skip-gram, 100 wym., 300 tys. słów)",
+    "w2v_polemo": "Word2Vec wytrenowany na PolEmo 2.0 (gensim, skip-gram, 100 wym.)"
+  },
+  "params": {
+    "k": 10,
+    "polarity_threshold": 0.1,
+    "polarity_min_count": 5,
+    "polarity_words": 13121,
+    "shared_vocabulary": 20206
+  },
+  "n_queries": 215,
+  "query_labels": {
+    "WYR_POZ": 125,
+    "WYR_NEG": 55,
+    "WZM": 18,
+    "OSL": 13,
+    "ODW": 4
+  },
+  "showcase": [
+    "miła",
+    "ok",
+    "polecam",
+    "dobrze",
+    "niestety",
+    "krótko",
+    "problem",
+    "problemy",
+    "bardzo",
+    "bardziej",
+    "duży",
+    "ani",
+    "trochę",
+    "całkiem",
+    "choćby",
+    "dosyć",
+    "nigdy",
+    "niezbyt",
+    "nikogo",
+    "zaden",
+    "brudne",
+    "nie"
+  ],
+  "global_rho2": {
+    "w2v vs w2v_polemo": 0.27019328828142414
+  },
+  "pairs": {
+    "w2v vs w2v_polemo": {
+      "ODW": {
+        "overlap": 0.07500000000000001,
+        "jaccard": 0.04093567251461988,
+        "overlap_shared": 0.1,
+        "rho2": 0.4062267541348941,
+        "n": 4
+      },
+      "OSL": {
+        "overlap": 0.0846153846153846,
+        "jaccard": 0.04739223624672541,
+        "overlap_shared": 0.1230769230769231,
+        "rho2": 0.23370222168952387,
+        "n": 13
+      },
+      "WYR_NEG": {
+        "overlap": 0.08727272727272727,
+        "jaccard": 0.05067548550520687,
+        "overlap_shared": 0.12181818181818184,
+        "rho2": 0.2631043131802612,
+        "n": 55
+      },
+      "WYR_POZ": {
+        "overlap": 0.0784,
+        "jaccard": 0.04451393188854488,
+        "overlap_shared": 0.11439999999999999,
+        "rho2": 0.31500222303173536,
+        "n": 125
+      },
+      "WZM": {
+        "overlap": 0.16111111111111112,
+        "jaccard": 0.10052841799487826,
+        "overlap_shared": 0.17777777777777778,
+        "rho2": 0.23856282178569735,
+        "n": 18
+      },
+      "wszystkie": {
+        "overlap": 0.08790697674418604,
+        "jaccard": 0.050887192902456774,
+        "overlap_shared": 0.12186046511627907,
+        "rho2": 0.2921078223001266,
+        "n": 215
+      }
+    }
+  },
+  "per_model": {
+    "w2v": {
+      "same_stem": {
+        "ODW": 0.075,
+        "OSL": 0.13076923076923078,
+        "WYR_NEG": 0.13818181818181818,
+        "WYR_POZ": 0.14,
+        "WZM": 0.05555555555555555,
+        "wszystkie": 0.13069767441860466
+      },
+      "polarity": {
+        "WYR_POZ": {
+          "n_queries": 125,
+          "scored": 490,
+          "same": 0.47346938775510206,
+          "opposite": 0.4142857142857143,
+          "neutral": 0.11224489795918367
+        },
+        "WYR_NEG": {
+          "n_queries": 55,
+          "scored": 256,
+          "same": 0.671875,
+          "opposite": 0.171875,
+          "neutral": 0.15625
+        }
+      }
+    },
+    "w2v_polemo": {
+      "same_stem": {
+        "ODW": 0.05,
+        "OSL": 0.015384615384615385,
+        "WYR_NEG": 0.030909090909090914,
+        "WYR_POZ": 0.02,
+        "WZM": 0.01666666666666667,
+        "wszystkie": 0.022790697674418606
+      },
+      "polarity": {
+        "WYR_POZ": {
+          "n_queries": 125,
+          "scored": 744,
+          "same": 0.5913978494623656,
+          "opposite": 0.31586021505376344,
+          "neutral": 0.09274193548387097
+        },
+        "WYR_NEG": {
+          "n_queries": 55,
+          "scored": 312,
+          "same": 0.6987179487179487,
+          "opposite": 0.20192307692307693,
+          "neutral": 0.09935897435897435
+        }
+      }
+    }
+  }
+}

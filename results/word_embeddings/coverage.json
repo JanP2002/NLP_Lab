@@ -1,0 +1,686 @@
+{
+  "iterations": [
+    1,
+    2
+  ],
+  "models": {
+    "w2v": "Word2Vec IPI PAN (nkjp+wiki, formy, skip-gram, 100 wym., 300 tys. słów)",
+    "w2v_polemo": "Word2Vec wytrenowany na PolEmo 2.0 (gensim, skip-gram, 100 wym.)"
+  },
+  "vocab_size": {
+    "w2v": 300000,
+    "w2v_polemo": 21658
+  },
+  "coverage": {
+    "w2v": {
+      "types": {
+        "n": 1505,
+        "in_vocab": 1423,
+        "share": 0.945514950166113
+      },
+      "tokens": {
+        "n": 2783,
+        "in_vocab": 2701,
+        "share": 0.9705353934602946
+      },
+      "annotated_types": {
+        "n": 312,
+        "in_vocab": 296,
+        "share": 0.9487179487179487
+      },
+      "by_word_label": {
+        "O": {
+          "n": 1238,
+          "in_vocab": 1172,
+          "share": 0.9466882067851373
+        },
+        "WYR_POZ": {
+          "n": 145,
+          "in_vocab": 137,
+          "share": 0.9448275862068966
+        },
+        "WYR_NEG": {
+          "n": 86,
+          "in_vocab": 78,
+          "share": 0.9069767441860465
+        },
+        "WZM": {
+          "n": 19,
+          "in_vocab": 19,
+          "share": 1.0
+        },
+        "OSL": {
+          "n": 13,
+          "in_vocab": 13,
+          "share": 1.0
+        },
+        "ODW": {
+          "n": 4,
+          "in_vocab": 4,
+          "share": 1.0
+        }
+      },
+      "oov_examples": [
+        {
+          "word": "2osobowym",
+          "freq": 1,
+          "polemo_freq": 1,
+          "word_label": "O",
+          "reason": "zawiera cyfrę"
+        },
+        {
+          "word": "acellularne",
+          "freq": 1,
+          "polemo_freq": 1,
+          "word_label": "O",
+          "reason": "rzadkie także w PolEmo (≤ 2 wystąpienia)"
+        },
+        {
+          "word": "antipaxos",
+          "freq": 1,
+          "polemo_freq": 3,
+          "word_label": "O",
+          "reason": "inne (literówka, forma rzadka lub złożona)"
+        },
+        {
+          "word": "autologiczne",
+          "freq": 1,
+          "polemo_freq": 1,
+          "word_label": "O",
+          "reason": "rzadkie także w PolEmo (≤ 2 wystąpienia)"
+        },
+        {
+          "word": "barga",
+          "freq": 1,
+          "polemo_freq": 2,
+          "word_label": "O",
+          "reason": "rzadkie także w PolEmo (≤ 2 wystąpienia)"
+        },
+        {
+          "word": "beznapięciowy",
+          "freq": 1,
+          "polemo_freq": 1,
+          "word_label": "O",
+          "reason": "rzadkie także w PolEmo (≤ 2 wystąpienia)"
+        },
+        {
+          "word": "chłodziarkę",
+          "freq": 1,
+          "polemo_freq": 1,
+          "word_label": "O",
+          "reason": "rzadkie także w PolEmo (≤ 2 wystąpienia)"
+        },
+        {
+          "word": "córcie",
+          "freq": 1,
+          "polemo_freq": 4,
+          "word_label": "O",
+          "reason": "inne (literówka, forma rzadka lub złożona)"
+        },
+        {
+          "word": "doczekalismy",
+          "freq": 1,
+          "polemo_freq": 1,
+          "word_label": "O",
+          "reason": "rzadkie także w PolEmo (≤ 2 wystąpienia)"
+        },
+        {
+          "word": "doprosiła",
+          "freq": 1,
+          "polemo_freq": 2,
+          "word_label": "WYR_POZ",
+          "reason": "rzadkie także w PolEmo (≤ 2 wystąpienia)"
+        },
+        {
+          "word": "dzieciusiami",
+          "freq": 1,
+          "polemo_freq": 1,
+          "word_label": "O",
+          "reason": "rzadkie także w PolEmo (≤ 2 wystąpienia)"
+        },
+        {
+          "word": "gloeniu",
+          "freq": 1,
+          "polemo_freq": 1,
+          "word_label": "O",
+          "reason": "rzadkie także w PolEmo (≤ 2 wystąpienia)"
+        },
+        {
+          "word": "groos",
+          "freq": 1,
+          "polemo_freq": 1,
+          "word_label": "O",
+          "reason": "rzadkie także w PolEmo (≤ 2 wystąpienia)"
+        },
+        {
+          "word": "hallmann",
+          "freq": 1,
+          "polemo_freq": 2,
+          "word_label": "O",
+          "reason": "rzadkie także w PolEmo (≤ 2 wystąpienia)"
+        },
+        {
+          "word": "ibisach",
+          "freq": 1,
+          "polemo_freq": 3,
+          "word_label": "O",
+          "reason": "inne (literówka, forma rzadka lub złożona)"
+        },
+        {
+          "word": "jednoręczną",
+          "freq": 1,
+          "polemo_freq": 1,
+          "word_label": "O",
+          "reason": "rzadkie także w PolEmo (≤ 2 wystąpienia)"
+        },
+        {
+          "word": "kartkówce",
+          "freq": 1,
+          "polemo_freq": 2,
+          "word_label": "O",
+          "reason": "rzadkie także w PolEmo (≤ 2 wystąpienia)"
+        },
+        {
+          "word": "klifami",
+          "freq": 1,
+          "polemo_freq": 1,
+          "word_label": "O",
+          "reason": "rzadkie także w PolEmo (≤ 2 wystąpienia)"
+        },
+        {
+          "word": "lazience",
+          "freq": 1,
+          "polemo_freq": 20,
+          "word_label": "O",
+          "reason": "brak polskich znaków (w modelu: łazience)"
+        },
+        {
+          "word": "lazienek",
+          "freq": 1,
+          "polemo_freq": 1,
+          "word_label": "O",
+          "reason": "brak polskich znaków (w modelu: łazienek)"
+        }
+      ]
+    },
+    "w2v_polemo": {
+      "types": {
+        "n": 1505,
+        "in_vocab": 1283,
+        "share": 0.8524916943521594
+      },
+      "tokens": {
+        "n": 2783,
+        "in_vocab": 2560,
+        "share": 0.9198706431908013
+      },
+      "annotated_types": {
+        "n": 312,
+        "in_vocab": 261,
+        "share": 0.8365384615384616
+      },
+      "by_word_label": {
+        "O": {
+          "n": 1238,
+          "in_vocab": 1067,
+          "share": 0.8618739903069467
+        },
+        "WYR_POZ": {
+          "n": 145,
+          "in_vocab": 125,
+          "share": 0.8620689655172413
+        },
+        "WYR_NEG": {
+          "n": 86,
+          "in_vocab": 56,
+          "share": 0.6511627906976745
+        },
+        "WZM": {
+          "n": 19,
+          "in_vocab": 18,
+          "share": 0.9473684210526315
+        },
+        "OSL": {
+          "n": 13,
+          "in_vocab": 13,
+          "share": 1.0
+        },
+        "ODW": {
+          "n": 4,
+          "in_vocab": 4,
+          "share": 1.0
+        }
+      },
+      "oov_examples": [
+        {
+          "word": "jadalnią",
+          "freq": 2,
+          "polemo_freq": 2,
+          "word_label": "O",
+          "reason": "rzadkie także w PolEmo (≤ 2 wystąpienia)"
+        },
+        {
+          "word": "1zł",
+          "freq": 1,
+          "polemo_freq": 1,
+          "word_label": "WYR_POZ",
+          "reason": "zawiera cyfrę"
+        },
+        {
+          "word": "2mm",
+          "freq": 1,
+          "polemo_freq": 2,
+          "word_label": "O",
+          "reason": "zawiera cyfrę"
+        },
+        {
+          "word": "2osobowym",
+          "freq": 1,
+          "polemo_freq": 1,
+          "word_label": "O",
+          "reason": "zawiera cyfrę"
+        },
+        {
+          "word": "acellularne",
+          "freq": 1,
+          "polemo_freq": 1,
+          "word_label": "O",
+          "reason": "rzadkie także w PolEmo (≤ 2 wystąpienia)"
+        },
+        {
+          "word": "altanie",
+          "freq": 1,
+          "polemo_freq": 1,
+          "word_label": "O",
+          "reason": "rzadkie także w PolEmo (≤ 2 wystąpienia)"
+        },
+        {
+          "word": "aspektach",
+          "freq": 1,
+          "polemo_freq": 2,
+          "word_label": "O",
+          "reason": "rzadkie także w PolEmo (≤ 2 wystąpienia)"
+        },
+        {
+          "word": "autologiczne",
+          "freq": 1,
+          "polemo_freq": 1,
+          "word_label": "O",
+          "reason": "rzadkie także w PolEmo (≤ 2 wystąpienia)"
+        },
+        {
+          "word": "badaczki",
+          "freq": 1,
+          "polemo_freq": 1,
+          "word_label": "O",
+          "reason": "rzadkie także w PolEmo (≤ 2 wystąpienia)"
+        },
+        {
+          "word": "barga",
+          "freq": 1,
+          "polemo_freq": 2,
+          "word_label": "O",
+          "reason": "rzadkie także w PolEmo (≤ 2 wystąpienia)"
+        },
+        {
+          "word": "beznapięciowy",
+          "freq": 1,
+          "polemo_freq": 1,
+          "word_label": "O",
+          "reason": "rzadkie także w PolEmo (≤ 2 wystąpienia)"
+        },
+        {
+          "word": "beztroskim",
+          "freq": 1,
+          "polemo_freq": 1,
+          "word_label": "WYR_NEG",
+          "reason": "rzadkie także w PolEmo (≤ 2 wystąpienia)"
+        },
+        {
+          "word": "białkowa",
+          "freq": 1,
+          "polemo_freq": 2,
+          "word_label": "O",
+          "reason": "rzadkie także w PolEmo (≤ 2 wystąpienia)"
+        },
+        {
+          "word": "bieszczadzkie",
+          "freq": 1,
+          "polemo_freq": 1,
+          "word_label": "O",
+          "reason": "rzadkie także w PolEmo (≤ 2 wystąpienia)"
+        },
+        {
+          "word": "budownictwo",
+          "freq": 1,
+          "polemo_freq": 2,
+          "word_label": "O",
+          "reason": "rzadkie także w PolEmo (≤ 2 wystąpienia)"
+        },
+        {
+          "word": "bugs",
+          "freq": 1,
+          "polemo_freq": 1,
+          "word_label": "WYR_NEG",
+          "reason": "rzadkie także w PolEmo (≤ 2 wystąpienia)"
+        },
+        {
+          "word": "bullet",
+          "freq": 1,
+          "polemo_freq": 1,
+          "word_label": "O",
+          "reason": "rzadkie także w PolEmo (≤ 2 wystąpienia)"
+        },
+        {
+          "word": "błyszczące",
+          "freq": 1,
+          "polemo_freq": 2,
+          "word_label": "O",
+          "reason": "rzadkie także w PolEmo (≤ 2 wystąpienia)"
+        },
+        {
+          "word": "choinkowe",
+          "freq": 1,
+          "polemo_freq": 1,
+          "word_label": "O",
+          "reason": "rzadkie także w PolEmo (≤ 2 wystąpienia)"
+        },
+        {
+          "word": "chłodziarki",
+          "freq": 1,
+          "polemo_freq": 2,
+          "word_label": "O",
+          "reason": "rzadkie także w PolEmo (≤ 2 wystąpienia)"
+        }
+      ]
+    }
+  },
+  "sanity": {
+    "w2v": {
+      "neighbours": {
+        "dobry": [
+          [
+            "świetny",
+            0.86
+          ],
+          [
+            "doskonały",
+            0.827
+          ],
+          [
+            "kiepski",
+            0.812
+          ],
+          [
+            "niezły",
+            0.802
+          ],
+          [
+            "wspaniały",
+            0.801
+          ]
+        ],
+        "polecam": [
+          [
+            "odradzam",
+            0.794
+          ],
+          [
+            "polecasz",
+            0.76
+          ],
+          [
+            "zalecam",
+            0.76
+          ],
+          [
+            "doradzam",
+            0.722
+          ],
+          [
+            "radzę",
+            0.713
+          ]
+        ],
+        "lekarz": [
+          [
+            "chirurg",
+            0.893
+          ],
+          [
+            "internista",
+            0.875
+          ],
+          [
+            "neurolog",
+            0.874
+          ],
+          [
+            "położnik",
+            0.861
+          ],
+          [
+            "kardiolog",
+            0.853
+          ]
+        ],
+        "brud": [
+          [
+            "smród",
+            0.767
+          ],
+          [
+            "kurz",
+            0.757
+          ],
+          [
+            "zaduch",
+            0.716
+          ],
+          [
+            "nieład",
+            0.705
+          ],
+          [
+            "syf",
+            0.703
+          ]
+        ],
+        "bardzo": [
+          [
+            "dość",
+            0.908
+          ],
+          [
+            "stosunkowo",
+            0.848
+          ],
+          [
+            "niezwykle",
+            0.842
+          ],
+          [
+            "niezbyt",
+            0.832
+          ],
+          [
+            "zbyt",
+            0.818
+          ]
+        ],
+        "nie": [
+          [
+            "nigdy",
+            0.848
+          ],
+          [
+            "ani",
+            0.843
+          ],
+          [
+            "jednak",
+            0.819
+          ],
+          [
+            "ale",
+            0.811
+          ],
+          [
+            "gdyż",
+            0.791
+          ]
+        ]
+      },
+      "pairs": {
+        "dobry–zły": 0.733,
+        "dobry–świetny": 0.86,
+        "polecam–odradzam": 0.794,
+        "czysto–brudno": 0.251,
+        "bardzo–trochę": 0.427
+      }
+    },
+    "w2v_polemo": {
+      "neighbours": {
+        "dobry": [
+          [
+            "słaby",
+            0.644
+          ],
+          [
+            "świetny",
+            0.629
+          ],
+          [
+            "genialny",
+            0.576
+          ],
+          [
+            "dyski",
+            0.575
+          ],
+          [
+            "pozytywny",
+            0.573
+          ]
+        ],
+        "polecam": [
+          [
+            "odradzam",
+            0.766
+          ],
+          [
+            "polecamy",
+            0.646
+          ],
+          [
+            "polecić",
+            0.616
+          ],
+          [
+            "polecę",
+            0.591
+          ],
+          [
+            "pragnie",
+            0.578
+          ]
+        ],
+        "lekarz": [
+          [
+            "specjalista",
+            0.729
+          ],
+          [
+            "ginekolog",
+            0.687
+          ],
+          [
+            "laryngolog",
+            0.669
+          ],
+          [
+            "kompetentny",
+            0.655
+          ],
+          [
+            "rzeczowy",
+            0.649
+          ]
+        ],
+        "brud": [
+          [
+            "bród",
+            0.836
+          ],
+          [
+            "syf",
+            0.832
+          ],
+          [
+            "wilgocią",
+            0.81
+          ],
+          [
+            "pajeczyny",
+            0.807
+          ],
+          [
+            "prlu",
+            0.804
+          ]
+        ],
+        "bardzo": [
+          [
+            "dość",
+            0.733
+          ],
+          [
+            "niezbyt",
+            0.659
+          ],
+          [
+            "niesamowicie",
+            0.657
+          ],
+          [
+            "dosyć",
+            0.648
+          ],
+          [
+            "naprawdę",
+            0.64
+          ]
+        ],
+        "nie": [
+          [
+            "oj",
+            0.672
+          ],
+          [
+            "wroce",
+            0.658
+          ],
+          [
+            "odpisać",
+            0.656
+          ],
+          [
+            "uważasz",
+            0.654
+          ],
+          [
+            "niewiem",
+            0.648
+          ]
+        ]
+      },
+      "pairs": {
+        "dobry–zły": 0.56,
+        "dobry–świetny": 0.629,
+        "polecam–odradzam": 0.766,
+        "czysto–brudno": 0.583,
+        "bardzo–trochę": 0.346
+      }
+    }
+  }
+}

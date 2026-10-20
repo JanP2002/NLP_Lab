@@ -1,0 +1,47 @@
+% Część II, Word Embeddings, pkt 4: dyskusja (word2vec). Liczby: makra \we... z generated/we_macros.tex
+% (python -m src.word_report). Tekst pisany ręcznie -- przy zmianie wyników sprawdzić, czy wnioski nadal się zgadzają.
+\subsection{Dyskusja}\label{sec:we-dyskusja}
+
+\textbf{1. Czy osadzenia uczone na dużych korpusach dobrze odwzorowują znaczenie słów w korpusie dziedzinowym?}
+Częściowo. Model IPI PAN zna \weCovTypesIpi\% słów i \weCovTokensIpi\% wystąpień naszego korpusu, w tym wszystkie
+zaanotowane modyfikatory (tab.~\ref{tab:we-coverage}); braki to głównie słowa rzadkie, formy z cyframi i zapisy bez
+polskich znaków. Znaczenie ogólne oddaje trafnie (\emph{lekarz} $\to$ \emph{chirurg, internista}; \emph{brud} $\to$
+\emph{smród, kurz}), ale jest to znaczenie słownikowe, a nie to, które słowo ma w recenzji: \emph{miła} ma sąsiadów
+\emph{sympatyczna, życzliwa}, a w modelu uczonym na PolEmo \emph{pomocna, uprzejma, profesjonalna} (opinie o lekarzach);
+\emph{brudne} ma w nim sąsiadów \emph{wykładziny, kafelki, pleśń} (hotele). Model dziedzinowy płaci za to rozmiarem:
+słownik ma tylko \weVocabPol{} słów, a pokrycie spada do \weCovTypesPol\% (\weCovNegPol\% dla słów WYR\_NEG). Oba modele
+traktują \emph{ok} (w anotacji ocena pozytywna) jak skrót \emph{około}.
+
+\textbf{2. Czy słowa związane z anotacją grupują się (pozytywne i negatywne)?}
+Słabo. Na wykresach t-SNE (rys.~\ref{fig:we-tsne-ipi} i~\ref{fig:we-tsne-pol}) słowa WYR\_POZ i WYR\_NEG są wymieszane.
+W przestrzeni 100-wymiarowej słowa o tej samej etykiecie są sobie nieco bliższe niż przy losowym przypisaniu etykiet
+(czystość 10 najbliższych sąsiadów \wePurityIpi{} wobec \wePurityRandIpi{}, tab.~\ref{tab:we-separation}), ale nie
+tworzą skupisk (sylwetka \weSilIpi{}); bliżej siebie leżą głównie słowa pozytywne (\wePurityPozIpi{}), negatywne nie
+(\wePurityNegIpi{}). Antonimy leżą blisko: $\cos(\text{dobry},\text{zły})=\weCosDobryZly$, a \wePolOppPozIpi\% ocenionych
+sąsiadów słów pozytywnych ma wydźwięk negatywny (\emph{polecam} $\to$ \emph{odradzam}, \emph{zadowolona} $\to$
+\emph{niezadowolona}). Wynika to ze sposobu uczenia: word2vec przewiduje kontekst słowa~\cite{word2vec}, a słowa
+o przeciwnym wydźwięku występują w tych samych kontekstach (\emph{obsługa była miła / niemiła}). Wydźwięk zależy też od
+dziedziny i negacji; nawet anotatorzy oznaczali \emph{nie} jako odwrócenie tylko w części zdań. Informacja o wydźwięku
+nie znika jednak całkiem: prosty klasyfikator odczytuje etykietę WYR\_POZ / WYR\_NEG z wektora IPI PAN z trafnością
+\weProbeIpi{} (przy losowych etykietach \weProbeRandIpi{}), choć nie widać jej w sąsiedztwie słów. Wyraźniej słowa
+grupują się według funkcji: modyfikatory (\emph{bardzo, bardziej, trochę, całkiem}) tworzą zwarte skupisko.
+
+\textbf{3. Na czym polegają różnice między listami najbliższych słów i z czego wynikają?}
+Modele prawie się nie zgadzają: wspólnych jest średnio tylko \weOverlap\% sąsiadów (\weOverlapShared\% przy wyszukiwaniu
+we wspólnym słowniku; tab.~\ref{tab:we-knn-overlap}), a korelacja podobieństw między słowami zapytania wynosi
+\weRhoAll{}. Różnica nie wynika więc z rozmiaru słowników, lecz z korpusu: model ogólny daje relacje słownikowe
+(synonimy, antonimy, wyrazy tej samej kategorii), model z recenzji -- skojarzenia tematyczne
+(tab.~\ref{tab:we-knn-examples}). Mały korpus PolEmo (\wePolemoWords{} słów) daje szum dla rzadszych słów
+(\emph{problem} $\to$ \emph{kulinarnie, zdrowotny}). Model form IPI PAN częściej zwraca odmiany tego samego słowa
+(\weStemIpi\% sąsiadów wobec \weStemPol\%), a zapisy bez polskich znaków tworzą w nim osobne sąsiedztwa (\emph{zaden}
+$\to$ \emph{kazdy, zwykly}). Najbardziej zgodne są wzmacniacze (\weOverlapWzm\% wspólnych sąsiadów), których użycie
+mało zależy od dziedziny.
+
+\textbf{4. Jak można ulepszyć osadzenia dla tego zadania?}
+(1) Dostosować model ogólny do dziedziny: dotrenować go na pełnych recenzjach PolEmo zamiast uczyć mały model od zera.
+(2) Dodać wiedzę o wydźwięku: \emph{retrofitting}~\cite{retrofit} z leksykonem (np. emocjonalną Słowosiecią), który
+odsuwa od siebie antonimy, albo osadzenia uczone z etykietami zdań PolEmo. (3) Użyć fastText~\cite{fasttext}, którego
+n-gramy znakowe radzą sobie z literówkami i zapisem bez polskich znaków. (4) Lematyzować tekst (albo użyć modeli
+\emph{lemmas}), aby odmiany nie zajmowały list. (5) Traktować negację jako część jednostki (\emph{nie\_polecam}).
+(6) Sięgnąć po modele kontekstowe (np. HerBERT), które rozróżniają znaczenie słowa zależnie od zdania (\emph{ok} jako
+ocena i jako skrót).

@@ -1,0 +1,237 @@
+{
+  "models": {
+    "w2v": "Word2Vec (IPI PAN) – średnia wektorów słów",
+    "w2v_polemo": "Word2Vec (PolEmo) – średnia wektorów słów"
+  },
+  "n_sentences": 200,
+  "probe_means": {
+    "w2v": {
+      "parafraza": 0.7099999785423279,
+      "przeciwny sens, podobne słowa": 0.8820000290870667,
+      "przeciwny sens, te same słowa": 0.949999988079071,
+      "ten sam sens, różna długość": 0.5782999992370605,
+      "kontrola: niepowiązane": 0.42750000953674316
+    },
+    "w2v_polemo": {
+      "parafraza": 0.699999988079071,
+      "przeciwny sens, podobne słowa": 0.8773000240325928,
+      "przeciwny sens, te same słowa": 0.9269999861717224,
+      "ten sam sens, różna długość": 0.65829998254776,
+      "kontrola: niepowiązane": 0.43050000071525574
+    }
+  },
+  "q1_opposite_top": {
+    "w2v": {
+      "n_top": 199,
+      "top_opposite": 0.1507537688442211,
+      "all_opposite": 0.12482412060301508,
+      "top_same": 0.2914572864321608,
+      "all_same": 0.3017587939698492
+    },
+    "w2v_polemo": {
+      "n_top": 199,
+      "top_opposite": 0.16080402010050251,
+      "all_opposite": 0.12482412060301508,
+      "top_same": 0.3065326633165829,
+      "all_same": 0.3017587939698492
+    }
+  },
+  "q2_lexical": {
+    "w2v": {
+      "spearman_cos_jaccard": 0.4524027723701856,
+      "mean_cos": {
+        "brak wspólnych słów": 0.6240286231040955,
+        "Jaccard (0; 0,1]": 0.7243952751159668,
+        "Jaccard > 0,1": 0.7712467312812805
+      },
+      "n_pairs": {
+        "brak wspólnych słów": 10221,
+        "Jaccard (0; 0,1]": 9279,
+        "Jaccard > 0,1": 400
+      }
+    },
+    "w2v_polemo": {
+      "spearman_cos_jaccard": 0.5025550836538525,
+      "mean_cos": {
+        "brak wspólnych słów": 0.5659055113792419,
+        "Jaccard (0; 0,1]": 0.6699868440628052,
+        "Jaccard > 0,1": 0.7377049922943115
+      },
+      "n_pairs": {
+        "brak wspólnych słów": 10221,
+        "Jaccard (0; 0,1]": 9279,
+        "Jaccard > 0,1": 400
+      }
+    }
+  },
+  "q4_length": {
+    "w2v": [
+      {
+        "grupa": "(4.999, 11.333]",
+        "n": 67.0,
+        "norma_wektora": 2.127000093460083,
+        "cos_do_centroidu": 0.746999979019165,
+        "srednie_cos_do_innych": 0.6119999885559082
+      },
+      {
+        "grupa": "(11.333, 20.0]",
+        "n": 70.0,
+        "norma_wektora": 1.9259999990463257,
+        "cos_do_centroidu": 0.8360000252723694,
+        "srednie_cos_do_innych": 0.6859999895095825
+      },
+      {
+        "grupa": "(20.0, 36.0]",
+        "n": 63.0,
+        "norma_wektora": 1.812000036239624,
+        "cos_do_centroidu": 0.8849999904632568,
+        "srednie_cos_do_innych": 0.7260000109672546
+      },
+      {
+        "grupa": "Spearman(n_tokens, śr. cos)",
+        "n": NaN,
+        "norma_wektora": NaN,
+        "cos_do_centroidu": NaN,
+        "srednie_cos_do_innych": 0.774
+      }
+    ],
+    "w2v_polemo": [
+      {
+        "grupa": "(4.999, 11.333]",
+        "n": 67.0,
+        "norma_wektora": 2.3480000495910645,
+        "cos_do_centroidu": 0.7179999947547913,
+        "srednie_cos_do_innych": 0.5630000233650208
+      },
+      {
+        "grupa": "(11.333, 20.0]",
+        "n": 70.0,
+        "norma_wektora": 2.049999952316284,
+        "cos_do_centroidu": 0.800000011920929,
+        "srednie_cos_do_innych": 0.628000020980835
+      },
+      {
+        "grupa": "(20.0, 36.0]",
+        "n": 63.0,
+        "norma_wektora": 1.9149999618530273,
+        "cos_do_centroidu": 0.847000002861023,
+        "srednie_cos_do_innych": 0.6650000214576721
+      },
+      {
+        "grupa": "Spearman(n_tokens, śr. cos)",
+        "n": NaN,
+        "norma_wektora": NaN,
+        "cos_do_centroidu": NaN,
+        "srednie_cos_do_innych": 0.757
+      }
+    ]
+  },
+  "q5_eval": {
+    "w2v": [
+      {
+        "etykiety": "final",
+        "n": 200,
+        "accuracy": 0.505,
+        "macro_F1": 0.31,
+        "kNN10_czystosc": 0.329,
+        "losowy_wg_rozkladu": 0.305,
+        "baza_wiekszosciowa": 0.415,
+        "silhouette_cos": -0.065,
+        "acc_minus_baza": 0.09
+      },
+      {
+        "etykiety": "gold",
+        "n": 200,
+        "accuracy": 0.44,
+        "macro_F1": 0.434,
+        "kNN10_czystosc": 0.318,
+        "losowy_wg_rozkladu": 0.25,
+        "baza_wiekszosciowa": 0.25,
+        "silhouette_cos": -0.047,
+        "acc_minus_baza": 0.19
+      },
+      {
+        "etykiety": "A1",
+        "n": 200,
+        "accuracy": 0.505,
+        "macro_F1": 0.312,
+        "kNN10_czystosc": 0.337,
+        "losowy_wg_rozkladu": 0.312,
+        "baza_wiekszosciowa": 0.43,
+        "silhouette_cos": -0.066,
+        "acc_minus_baza": 0.075
+      },
+      {
+        "etykiety": "A2",
+        "n": 200,
+        "accuracy": 0.495,
+        "macro_F1": 0.305,
+        "kNN10_czystosc": 0.333,
+        "losowy_wg_rozkladu": 0.308,
+        "baza_wiekszosciowa": 0.42,
+        "silhouette_cos": -0.091,
+        "acc_minus_baza": 0.075
+      }
+    ],
+    "w2v_polemo": [
+      {
+        "etykiety": "final",
+        "n": 200,
+        "accuracy": 0.54,
+        "macro_F1": 0.348,
+        "kNN10_czystosc": 0.356,
+        "losowy_wg_rozkladu": 0.305,
+        "baza_wiekszosciowa": 0.415,
+        "silhouette_cos": -0.048,
+        "acc_minus_baza": 0.125
+      },
+      {
+        "etykiety": "gold",
+        "n": 200,
+        "accuracy": 0.49,
+        "macro_F1": 0.487,
+        "kNN10_czystosc": 0.358,
+        "losowy_wg_rozkladu": 0.25,
+        "baza_wiekszosciowa": 0.25,
+        "silhouette_cos": -0.018,
+        "acc_minus_baza": 0.24
+      },
+      {
+        "etykiety": "A1",
+        "n": 200,
+        "accuracy": 0.555,
+        "macro_F1": 0.37,
+        "kNN10_czystosc": 0.367,
+        "losowy_wg_rozkladu": 0.312,
+        "baza_wiekszosciowa": 0.43,
+        "silhouette_cos": -0.037,
+        "acc_minus_baza": 0.125
+      },
+      {
+        "etykiety": "A2",
+        "n": 200,
+        "accuracy": 0.525,
+        "macro_F1": 0.36,
+        "kNN10_czystosc": 0.36,
+        "losowy_wg_rozkladu": 0.308,
+        "baza_wiekszosciowa": 0.42,
+        "silhouette_cos": -0.049,
+        "acc_minus_baza": 0.105
+      }
+    ]
+  },
+  "q5_recall": {
+    "w2v": {
+      "POZ": 0.444,
+      "NEG": 0.065,
+      "NEU": 0.892,
+      "AMB": 0.0
+    },
+    "w2v_polemo": {
+      "POZ": 0.537,
+      "NEG": 0.109,
+      "NEU": 0.892,
+      "AMB": 0.0
+    }
+  }
+}

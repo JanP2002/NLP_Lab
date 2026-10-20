@@ -2,7 +2,7 @@
 -r requirements.txt
 plotly>=5.20
 scipy>=1.10
-gensim>=4.3.3           # fastText (load_facebook_vectors) i Word2Vec (KeyedVectors)
+gensim>=4.4             # fastText i Word2Vec; od 4.4 działa z numpy 2
 huggingface_hub>=0.23   # automatyczne pobranie fastText kgr10
 jupyter>=1.0
 nbformat>=5.9

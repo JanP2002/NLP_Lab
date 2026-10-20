@@ -355,11 +355,13 @@ def _load_tsne(model: str):
 
 
 MODEL_TITLES = {"fasttext": "fastText (uśrednione wektory słów)", "use": "Universal Sentence Encoder",
-                "tfidf": "TF-IDF + SVD (punkt odniesienia)"}
+                "tfidf": "TF-IDF + SVD (punkt odniesienia)",
+                "w2v": "Word2Vec IPI PAN (uśrednione wektory słów)",
+                "w2v_polemo": "Word2Vec PolEmo (uśrednione wektory słów)"}
 
 
-def build_tsne_figures():
-    for model in ("fasttext", "use", "tfidf"):
+def build_tsne_figures(models=tuple(MODEL_TITLES)):
+    for model in models:
         p = ROOT / "results" / "text_embeddings" / f"tsne_{model}.html"
         if not p.exists():
             continue
@@ -471,8 +473,21 @@ def build_word_embeddings():
 
     Miejsce na generowanie tabel (listy k-najbliższych sąsiadów, porównanie modeli) i wykresów t-SNE
     słów; pliki wejściowe dodaj do results/word_embeddings/. Sprawozdanie włącza je przez \\input{generated/...}.
+
+    Generuje je src/word_report.py (generated/we_*.tex, figures/tsne_words_*.png) z wyników pkt 1–3.
     """
-    return
+    if not (ROOT / "results" / "word_embeddings" / "knn_summary.json").exists():
+        return
+    from src import word_report
+    word_report.run()
+
+
+def build_text_embeddings_w2v():
+    """Text Embeddings dla uśrednionego Word2Vec: generated/te_w2v_*.tex z wyników src/text_analysis.py."""
+    if not (ROOT / "results" / "text_embeddings" / "analiza_w2v.json").exists():
+        return
+    from src import text_report
+    text_report.run()
 
 
 # --------------------------------------------------------------------------- main
@@ -488,6 +503,7 @@ def main():
     build_descriptive(stats)
     build_tsne_figures()
     build_text_embedding_tables()
+    build_text_embeddings_w2v()
     build_word_embeddings()
     lines = [rf"\newcommand{{\{k}}}{{{v}}}" for k, v in sorted(MACROS.items())]
     (GEN / "macros.tex").write_text("\n".join(lines) + "\n", encoding="utf-8")

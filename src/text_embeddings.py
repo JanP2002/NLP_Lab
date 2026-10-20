@@ -3,7 +3,8 @@
 Plik odpowiada za trzy podpunkty zadania:
 
 * pkt 1 (0,5 pkt) – osadzenia zdań: ``get_embedder`` / ``get_embeddings``
-  (fastText i Word2Vec uśredniane po tokenach, Universal Sentence Encoder,
+  (fastText i Word2Vec uśredniane po tokenach – Word2Vec w dwóch wariantach z części
+  Word Embeddings: IPI PAN i wytrenowany na PolEmo –, Universal Sentence Encoder,
   dodatkowo TF-IDF+SVD jako punkt odniesienia bez pobierania modeli),
 * pkt 2 (0,5 pkt) – t-SNE + interaktywny wykres Plotly: ``tsne_2d``,
   ``make_tsne_figure``,
@@ -14,6 +15,7 @@ Plik odpowiada za trzy podpunkty zadania:
 Uruchomienie z linii poleceń (pkt 1 i 2, liczy i zapisuje wyniki):
 
     python -m src.text_embeddings --models fasttext use
+    python -m src.text_embeddings --models w2v w2v_polemo # uśrednione Word2Vec (modele z models/)
     python -m src.text_embeddings --models tfidf          # test bez pobierania modeli
 """
 from __future__ import annotations
@@ -21,6 +23,7 @@ from __future__ import annotations
 import argparse
 import hashlib
 import json
+import os
 import re
 import sys
 import textwrap
@@ -33,6 +36,7 @@ import pandas as pd
 import config
 
 OUT_DIR = config.RESULTS_DIR / "text_embeddings"
+MODEL_NAMES = ["fasttext", "w2v", "w2v_polemo", "use", "tfidf"]
 TOKEN_RE = re.compile(r"\w+", re.UNICODE)
 FASTTEXT_REPO = "clarin-pl/fastText-kgr10"
 USE_TFHUB_URL = "https://tfhub.dev/google/universal-sentence-encoder-multilingual/3"
@@ -265,46 +269,68 @@ def _load_fasttext(path: str | None):
     from gensim.models.fasttext import load_facebook_vectors
 
     if path is None:
-        from huggingface_hub import hf_hub_download, list_repo_files
+        local = config.MODELS_DIR / config.FASTTEXT_FILE
+        if local.exists():
+            path = str(local)
+        else:
+            from huggingface_hub import hf_hub_download
 
-        bins = [f for f in list_repo_files(FASTTEXT_REPO) if f.endswith(".bin")]
-        if not bins:
-            raise FileNotFoundError(
-                f"W repozytorium {FASTTEXT_REPO} nie ma pliku .bin – pobierz model ręcznie "
-                "i podaj --fasttext-path.")
-        # model ma kilka GB; gdy jest wiele plików, bierzemy pierwszy alfabetycznie
-        print("Pobieranie fastText:", sorted(bins)[0])
-        path = hf_hub_download(FASTTEXT_REPO, sorted(bins)[0])
+            # model ma 3,7 GB; plik z uwag technicznych (skip-gram, 100 wymiarów)
+            print("Pobieranie fastText:", config.FASTTEXT_FILE)
+            path = hf_hub_download(FASTTEXT_REPO, config.FASTTEXT_FILE)
     return load_facebook_vectors(path)
 
 
-def _load_w2v(path: str | None):
+def _load_w2v(path: str | None = None, limit: int | None = config.W2V["limit"]):
+    """Word2Vec z dsmodels.nlp.ipipan.waw.pl (format word2vec .txt/.txt.gz/.bin albo gensim .kv).
+
+    Bez ścieżki: zmienna środowiskowa W2V_PATH, a potem ``models/<config.W2V["file"]>``.
+    ``limit`` = liczba najczęstszych słów (plik jest posortowany według częstości).
+    Pierwsze wczytanie zapisuje obok pliku kopię ``<nazwa>_<limit>.kv``, którą kolejne
+    wywołania czytają w ułamku sekundy.
+    """
     from gensim.models import KeyedVectors
 
-    if path is None:
-        raise ValueError(
-            "Word2Vec dla polskiego trzeba pobrać ręcznie z https://dsmodels.nlp.ipipan.waw.pl "
-            "(wybierz model „forms”, bez znaczników POS) i podać ścieżkę: --w2v-path PLIK.")
-    p = Path(path)
+    p = Path(path or os.environ.get("W2V_PATH") or config.MODELS_DIR / config.W2V["file"])
+    if not p.exists():
+        raise FileNotFoundError(
+            f"Brak modelu Word2Vec: {p}. Pobierz go z dsmodels.nlp.ipipan.waw.pl, np.\n"
+            f"  curl -L -o \"{config.MODELS_DIR / config.W2V['file']}\" {config.W2V['url']}\n"
+            "albo podaj ścieżkę: --w2v-path PLIK.")
     if p.suffix == ".kv":
         return KeyedVectors.load(str(p))
-    return KeyedVectors.load_word2vec_format(str(p), binary=p.suffix == ".bin")
+    cache = p.with_name(f"{p.name.split('.')[0]}_{limit or 'all'}.kv")
+    if cache.exists():
+        return KeyedVectors.load(str(cache))
+    kv = KeyedVectors.load_word2vec_format(str(p), binary=p.suffix == ".bin", limit=limit)
+    kv.save(str(cache))
+    return kv
 
 
 def get_embedder(name: str, fasttext_path: str | None = None,
                  w2v_path: str | None = None, use_backend: str = "auto") -> Embedder:
-    """Fabryka modeli: 'fasttext', 'w2v', 'use', 'tfidf'. Modele ładują się leniwie."""
+    """Fabryka modeli: 'fasttext', 'w2v', 'w2v_polemo', 'use', 'tfidf'. Modele ładują się leniwie.
+
+    'w2v' = Word2Vec IPI PAN (``_load_w2v``: 300 tys. najczęstszych form, bez ścieżki z ``models/``),
+    'w2v_polemo' = Word2Vec wytrenowany na zdaniach PolEmo (część Word Embeddings, ``models/w2v_polemo.kv``).
+    """
     if name == "fasttext":
         return AvgVectorEmbedder("fasttext", "fastText kgr10 – średnia wektorów słów",
                                  lambda: _load_fasttext(fasttext_path), subword=True)
     if name == "w2v":
         return AvgVectorEmbedder("w2v", "Word2Vec (IPI PAN) – średnia wektorów słów",
                                  lambda: _load_w2v(w2v_path), subword=False)
+    if name == "w2v_polemo":
+        def load_polemo():
+            from src.word_embeddings import train_polemo_w2v  # import leniwy: word_embeddings importuje ten moduł
+            return train_polemo_w2v()
+        return AvgVectorEmbedder("w2v_polemo", "Word2Vec (PolEmo) – średnia wektorów słów",
+                                 load_polemo, subword=False)
     if name == "use":
         return UseEmbedder(use_backend)
     if name == "tfidf":
         return TfidfSvdEmbedder()
-    raise ValueError(f"Nieznany model: {name!r} (dostępne: fasttext, w2v, use, tfidf)")
+    raise ValueError(f"Nieznany model: {name!r} (dostępne: {', '.join(MODEL_NAMES)})")
 
 
 def _fingerprint(df: pd.DataFrame) -> str:
@@ -645,19 +671,27 @@ def evaluate_embeddings(emb: np.ndarray, labels: pd.Series, k: int = 10, folds: 
             "acc_minus_baza": round(float(accuracy_score(y, pred) - counts.max() / counts.sum()), 3)}
 
 
+def evaluation_table(df: pd.DataFrame, emb: np.ndarray) -> pd.DataFrame:
+    """``evaluate_embeddings`` dla każdego źródła etykiet (final, gold, A1, A2) – te same miary co tabela
+    klasyfikacji w sprawozdaniu, więc wyniki są porównywalne między modelami."""
+    return pd.DataFrame([{"etykiety": col, **evaluate_embeddings(emb, df[col])} for col in label_columns(df)])
+
+
 # --------------------------------------------------------------------------
 # CLI: pkt 1 i 2 (liczy osadzenia, t-SNE i zapisuje wykresy HTML)
 # --------------------------------------------------------------------------
 def main(argv: list[str] | None = None) -> None:
     ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     ap.add_argument("--models", nargs="+", default=["fasttext", "use"],
-                    choices=["fasttext", "w2v", "use", "tfidf"])
+                    choices=MODEL_NAMES)
     ap.add_argument("--iterations", nargs="+", type=int, default=[1, 2])
     ap.add_argument("--fasttext-path", default=None, help="lokalny plik .bin fastText (inaczej pobierze z HF)")
     ap.add_argument("--w2v-path", default=None, help="lokalny plik Word2Vec (.bin/.txt/.kv) z dsmodels.nlp.ipipan.waw.pl")
     ap.add_argument("--use-backend", default="auto", choices=["auto", "tfhub", "distiluse"])
     ap.add_argument("--perplexity", type=float, default=None)
     ap.add_argument("--force", action="store_true", help="przelicz osadzenia mimo cache")
+    ap.add_argument("--evaluate", action="store_true",
+                    help="miary względem etykiet (evaluate_embeddings) -> results/text_embeddings/eval_<model>.csv")
     a = ap.parse_args(argv)
 
     # konsola Windows (cp1250) nie zna części znaków – zamiast wyjątku podstaw '?'
@@ -671,12 +705,22 @@ def main(argv: list[str] | None = None) -> None:
     for name in a.models:
         emb_model = get_embedder(name, a.fasttext_path, a.w2v_path, a.use_backend)
         emb = get_embeddings(emb_model, df, force=a.force)
+        csv = export_embeddings_csv(df, emb, name)  # pkt 1: pełne osadzenia (jak w notebooku)
+        cov = getattr(emb_model, "last_coverage", None)
+        if cov is not None:  # tylko gdy osadzenia liczono teraz (nie z cache)
+            print(f"[{name}] pokrycie słownika: średnio {cov.mean():.1%}, min {cov.min():.1%}; "
+                  f"zdań bez żadnego znanego słowa: {int((cov == 0).sum())}")
+        print(f"[{name}] osadzenia {emb.shape} -> {csv}")
         xy = tsne_2d(emb, a.perplexity)
         pd.DataFrame({"sent_id": df["sent_id"], "x": xy[:, 0], "y": xy[:, 1]}).to_csv(
             OUT_DIR / f"tsne_{name}.csv", index=False)
         fig = make_tsne_figure(df, xy, f"t-SNE – {emb_model.label}")
         fig.write_html(OUT_DIR / f"tsne_{name}.html", include_plotlyjs="cdn")
         print(f"[{name}] {emb.shape} -> {OUT_DIR / f'tsne_{name}.html'}")
+        if a.evaluate:
+            ev = evaluation_table(df, emb)
+            ev.to_csv(OUT_DIR / f"eval_{name}.csv", index=False, encoding="utf-8-sig")
+            print(ev.to_string(index=False))
 
 
 if __name__ == "__main__":
