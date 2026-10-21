@@ -28,8 +28,30 @@ python -m src.text_embeddings --models w2v w2v_polemo
 python -m src.text_embeddings --models fasttext w2v use --fasttext-path /sciezka/kgr10.bin --w2v-path /sciezka/model.bin
 
 # pełny raport (pkt 1–3):
-jupyter notebook notebooks/Zadanie1_Text_Embeddings.ipynb
+jupyter lab notebooks/Text_Embeddings.ipynb        # albo: jupyter notebook …, albo VS Code
 ```
+
+* **Wykresy interaktywne w notebooku.** Notebook ustawia `pio.renderers.default = "plotly_mimetype+notebook_connected"`:
+  * format `plotly_mimetype` rysują JupyterLab, Notebook 7 i VS Code, także w niezaufanym notebooku,
+  * format `notebook_connected` rysuje klasyczny Notebook i eksport HTML (plotly.js z CDN, potrzebny internet).
+
+  Wcześniej było samo `notebook_connected`, a jego wykresy (HTML ze skryptem) JupyterLab i Notebook 7 pokazują jako
+  puste pole, bo w wynikach niezaufanego notebooka nie uruchamiają skryptów.
+* `notebooks/Text_Embeddings_executed.ipynb` ma już dopisany format `plotly_mimetype` dla wszystkich 7 wykresów
+  (3 mapy podobieństwa, 3 t-SNE, wykres długości). Dopisał go `python -m src.notebook_plotly <notebook>`, który odtwarza
+  figury z zapisanego HTML, bez ponownego uruchamiania notebooka; wyniki się nie zmieniły. Ten sam skrypt naprawi
+  inne notebooki wykonane z `notebook_connected`.
+* **Wersja uruchomiona lokalnie:** `notebooks/Text_Embeddings_local_executed.ipynb` / `.html` (21.10). To ponowne
+  uruchomienie tego samego notebooka z nowym ustawieniem wykresów, więc wszystkie 7 wykresów ma oba formaty bez
+  dodatkowej obróbki. Różnice względem wersji zespołu (opisane też w pierwszej komórce):
+  * fastText: ten sam plik (`models/kgr10.plain.cbow.dim100.neg10.bin`, pobrany z HF). Osadzenia i miary są
+    identyczne jak u zespołu, ale układ t-SNE jest inny przy innej wersji scikit-learn;
+  * USE: `distiluse-base-multilingual-cased-v1` zamiast USE z TF Hub (w Windows brak `tensorflow_text`), więc liczby
+    USE różnią się od sprawozdania, np. accuracy 0,525 wobec 0,520;
+  * wyniki (osadzenia, CSV, HTML) trafiły do `results/text_embeddings_local/`; pliki zespołu w `results/text_embeddings/`
+    zostały nietknięte.
+
+  **Liczby w sprawozdaniu nadal pochodzą z wersji zespołu** (`Text_Embeddings_executed.ipynb`).
 
 * fastText kgr10 pobiera się z Hugging Face (`clarin-pl/fastText-kgr10`) i waży kilka GB.
 * Word2Vec z https://dsmodels.nlp.ipipan.waw.pl trzeba pobrać ręcznie (wybierz model „forms”, bez znaczników POS).

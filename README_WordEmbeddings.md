@@ -2,6 +2,34 @@
 
 Plan i decyzje: [PLAN_Czesc2_Word2Vec.md](PLAN_Czesc2_Word2Vec.md). Polecenia uruchamiamy z katalogu głównego repozytorium.
 
+## Notebook z wykresami interaktywnymi (pkt 1–4)
+
+[`notebooks/Word_Embeddings.ipynb`](notebooks/Word_Embeddings.ipynb) wyświetla pod komórkami **interaktywne wykresy
+t-SNE słów** (pkt 2). Po najechaniu na punkt widać słowo i jego anotację, lista rozwijana zmienia kolorowanie,
+przycisk „podpisy” pokazuje napisy przy słowach. Notebook pokazuje też wyniki pkt 1 i 3 oraz skrót dyskusji (pkt 4).
+Czyta zapisane wyniki z `results/word_embeddings/`, więc **nie wymaga pobierania modeli**; „Run All” trwa ok. 40 s.
+
+```bash
+pip install -r requirements_embeddings.txt          # jupyter, plotly, gensim, …
+jupyter lab notebooks/Word_Embeddings.ipynb         # albo: jupyter notebook …, albo otwarcie w VS Code
+```
+
+* **Wyświetlanie wykresów.** Notebook ustawia `pio.renderers.default = "plotly_mimetype+notebook_connected"`:
+  * format `plotly_mimetype` rysują JupyterLab, Notebook 7 i VS Code,
+  * format `notebook_connected` (plotly.js z CDN, potrzebny internet) rysuje klasyczny Notebook i eksport HTML.
+
+  Bez tego ustawienia Plotly poza Jupyterem otwiera wykres w przeglądarce zamiast pod komórką.
+* **Wersje z wynikami** (bez uruchamiania):
+  * `notebooks/Word_Embeddings_executed.ipynb` – wykresy widać od razu po otwarciu w JupyterLab lub VS Code; jeśli
+    klasyczny Notebook ich nie pokazuje, trzeba zaufać notebookowi (*File → Trust Notebook*) albo uruchomić go ponownie;
+  * `notebooks/Word_Embeddings_executed.html` – w przeglądarce, z interaktywnymi wykresami.
+
+  Obie powstają poleceniami:
+  `jupyter nbconvert --to notebook --execute notebooks/Word_Embeddings.ipynb --output Word_Embeddings_executed.ipynb`
+  i `jupyter nbconvert --to html notebooks/Word_Embeddings_executed.ipynb`.
+* Testy: `python -m pytest tests/test_word_notebook.py -q`. Sprawdzają 4 wykresy, oba formaty i podpowiedzi
+  ze słowem i anotacją, a także uruchamiają cały notebook.
+
 ## Uruchomienie
 
 ```bash
