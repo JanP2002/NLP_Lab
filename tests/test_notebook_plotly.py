@@ -62,7 +62,7 @@ def test_text_embeddings_notebooks_render_in_jupyterlab():
             if npl.PLOTLY_MIME in data:
                 mime_figs += 1
                 go.Figure(data=data[npl.PLOTLY_MIME]["data"], layout=data[npl.PLOTLY_MIME]["layout"])
-    assert html_figs == mime_figs == 7
+    assert html_figs == mime_figs == 12                                          # 7 zespołu + 5 Word2Vec
     assert npl.add_plotly_mimetype(nb) == 0                                      # nic do uzupełnienia
 
 

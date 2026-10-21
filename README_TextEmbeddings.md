@@ -5,8 +5,9 @@ Pliki i punkty zadania:
 | Plik | Co robi | Punkt zadania |
 |---|---|---|
 | `src/text_embeddings.py` | osadzenia zdań (fastText / Word2Vec / USE / TF-IDF), t-SNE, wykres Plotly, funkcje analizy | pkt 1, 2, 3 |
-| `notebooks/Zadanie1_Text_Embeddings.ipynb` | raport: sekcja 1 = pkt 1, sekcja 2 = pkt 2, sekcja 3 = pkt 3 (pytania 1–5) | pkt 1, 2, 3 |
-| `tests/test_text_embeddings.py`, `tests/test_text_embeddings_w2v.py` | testy offline (+ uśrednione Word2Vec) | – |
+| `notebooks/Text_Embeddings.ipynb` | raport: sekcja 1 = pkt 1, sekcja 2 = pkt 2, sekcja 3 = pkt 3 (pytania 1–5); Word2Vec w 1.4, 2.1, 3.7 | pkt 1, 2, 3 |
+| `src/notebook_w2v.py` | dopisuje komórki Word2Vec do notebooka i wykonuje tylko je | pkt 1b, 2, 3 |
+| `tests/test_text_embeddings.py`, `tests/test_text_embeddings_w2v.py`, `tests/test_te_notebook_w2v.py` | testy offline (+ uśrednione Word2Vec) | – |
 | `requirements_embeddings.txt` | zależności (Windows/Linux/macOS) | – |
 | `requirements_use_tfhub.txt` | opcjonalnie: oryginalny USE z TF Hub (tylko Linux/macOS/WSL/Colab) | – |
 
@@ -37,10 +38,26 @@ jupyter lab notebooks/Text_Embeddings.ipynb        # albo: jupyter notebook …,
 
   Wcześniej było samo `notebook_connected`, a jego wykresy (HTML ze skryptem) JupyterLab i Notebook 7 pokazują jako
   puste pole, bo w wynikach niezaufanego notebooka nie uruchamiają skryptów.
-* `notebooks/Text_Embeddings_executed.ipynb` ma już dopisany format `plotly_mimetype` dla wszystkich 7 wykresów
+* `notebooks/Text_Embeddings_executed.ipynb` ma już dopisany format `plotly_mimetype` dla 7 wykresów zespołu
   (3 mapy podobieństwa, 3 t-SNE, wykres długości). Dopisał go `python -m src.notebook_plotly <notebook>`, który odtwarza
   figury z zapisanego HTML, bez ponownego uruchamiania notebooka; wyniki się nie zmieniły. Ten sam skrypt naprawi
   inne notebooki wykonane z `notebook_connected`.
+* **Word2Vec w notebooku (pkt 1b, 2, 3).** Uśrednione Word2Vec (IPI PAN i PolEmo) ma w obu notebookach własne
+  podsekcje:
+  * **1.4**: osadzenia, pokrycie słownika, podgląd macierzy, 2 mapy podobieństwa;
+  * **2.1**: 2 interaktywne wykresy t-SNE (hover: zdanie, etykiety gold, A1, A2, final);
+  * **3.7**: analiza do pytań 1–5 (te same funkcje co 3.1–3.5, porównanie pięciu modeli, interaktywny wykres
+    długości) i odpowiedzi 3.7.6 (z `results/text_embeddings/odpowiedzi_w2v.md`).
+
+  Dopisuje je `python -m src.notebook_w2v` (ok. 30 s). Wykonanego notebooka zespołu nie uruchamiamy od nowa, bo
+  w Windows nie ma USE z TF Hub. Skrypt wykonuje tylko komórki Word2Vec (po komórkach startowych zespołu), wpisuje ich
+  wyniki i eksportuje `Text_Embeddings_executed.html`. Przed zapisem sprawdza dwie rzeczy:
+  * komórki zespołu i ich wyniki się nie zmieniły;
+  * liczby zgadzają się z `results/text_embeddings/` (`eval_*.csv`, `tsne_*.csv`, `analiza_w2v.json`), czyli
+    ze sprawozdaniem.
+
+  Razem w notebooku jest 12 wykresów interaktywnych (7 zespołu i 5 Word2Vec). Skrypt można uruchamiać wielokrotnie:
+  stare komórki Word2Vec (znacznik `w2v`) są zastępowane.
 * **Wersja uruchomiona lokalnie:** `notebooks/Text_Embeddings_local_executed.ipynb` / `.html` (21.10). To ponowne
   uruchomienie tego samego notebooka z nowym ustawieniem wykresów, więc wszystkie 7 wykresów ma oba formaty bez
   dodatkowej obróbki. Różnice względem wersji zespołu (opisane też w pierwszej komórce):
