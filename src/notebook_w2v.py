@@ -18,7 +18,6 @@ from __future__ import annotations
 import argparse
 import copy
 import json
-import re
 import sys
 
 import config
@@ -26,7 +25,7 @@ import config
 NB_DIR = config.ROOT / "notebooks"
 SOURCE_NB = NB_DIR / "Text_Embeddings.ipynb"
 EXECUTED_NB = NB_DIR / "Text_Embeddings_executed.ipynb"
-ANSWERS_MD = config.RESULTS_DIR / "text_embeddings" / "odpowiedzi_w2v.md"
+ANSWERS_MD = config.RESULTS_DIR / "text_embeddings" / "odpowiedzi_porownanie.md"
 TAG = "w2v"
 
 INTRO_ID = "ab842773"                                   # komórka tytułowa notebooka
@@ -109,7 +108,8 @@ Te same funkcje, pary kontrolne i miary co w 3.1–3.5, tym razem dla uśrednion
 
 W tabelach porównawczych fastText, USE i TF-IDF to wyniki zespołu z sekcji 3.2–3.5, wczytane z tabel sprawozdania
 (`report/generated/emb_*.tex`, funkcje `team_*` w `src/text_analysis.py`). USE z TF Hub nie działa w Windows,
-więc tych modeli nie liczymy tu od nowa. Odpowiedzi na pytania są w 3.7.6."""),
+więc tych modeli nie liczymy tu od nowa (wyjątek: dwie miary korpusowe w 3.7.6). Zestawienie pięciu modeli jest
+w 3.7.6, a odpowiedzi na pytania, z porównaniem Word2Vec z innymi metodami, w 3.7.7."""),
     ("markdown", "w2v-3-7-1-md", r"""#### 3.7.1 Pyt. 1: zdania uznane za podobne, a różne znaczeniowo
 Najbardziej podobne pary zdań o przeciwnym wydźwięku (POZ i NEG według etykiety `final`) oraz udział par POZ–NEG
 wśród 1% najbardziej podobnych par zdań, w porównaniu z udziałem wśród wszystkich par."""),
@@ -199,14 +199,91 @@ for n in W2V_MODELS:
     recall_w2v[W2V_TITLES[n]] = rep.loc[te.config.SENT_LABELS, "recall"]
 print("Czułość (recall) dla każdej klasy, etykiety final (fastText, USE, TF-IDF: wyniki zespołu z 3.5):")
 display(pd.concat([pd.DataFrame(recall_w2v).T, ta.team_recall().rename(index=TEAM_NAMES)]).round(3))"""),
+    ("markdown", "w2v-3-7-6-md", r"""#### 3.7.6 Zestawienie: Word2Vec na tle fastText, USE i TF-IDF
+Najważniejsze liczby z 3.1–3.5 i 3.7.1–3.7.5 w jednej tabeli, pogrupowane według pytań. Cosinusy różnych modeli
+mają różne skale, więc dochodzą dwie miary względne z par kontrolnych: **pozycja na skali**, na której 0 to średnia
+par niepowiązanych, a 1 to średnia parafraz (powyżej 1 = bliżej niż parafrazy), oraz różnica parafraza − niepowiązane.
+Dwie miary korpusowe (udział POZ–NEG wśród 1% najbliższych par, Spearman cos vs Jaccard) liczymy tu także dla
+fastText i TF-IDF. fastText to te same osadzenia CBOW co u zespołu (zapisane przy lokalnym uruchomieniu w
+`results/text_embeddings_local/`; jego miary klasyfikacji są identyczne jak w 3.5), a TF-IDF liczy się od nowa.
+Dla USE tych dwóch miar brak („–”), bo osadzeń z TF Hub nie ma lokalnie."""),
+    ("code", "w2v-3-7-6", r"""# fastText: osadzenia CBOW zespołu zapisane przy lokalnym uruchomieniu (model nie jest wczytywany); TF-IDF od nowa
+E_cmp = {**E_w2v,
+         "fasttext": te.get_embeddings(te.get_embedder("fasttext"), df,
+                                       out_dir=te.config.RESULTS_DIR / "text_embeddings_local"),
+         "tfidf": te.get_embedder("tfidf").encode(df["text"].tolist())}
+NAMES = {**W2V_TITLES, **TEAM_NAMES}
+cols = [NAMES[n] for n in ["w2v", "w2v_polemo", "fasttext", "use", "tfidf"]]
+
+pm = (probes_w2v.groupby("kategoria", sort=False)[W2V_MODELS].mean().rename(columns=W2V_TITLES)
+      .join(ta.team_probe_means())[cols])
+para, unrel = pm.loc["parafraza"], pm.loc["kontrola: niepowiązane"]
+on_scale = lambda cat: (pm.loc[cat] - unrel) / (para - unrel)   # 0 = jak zdania niepowiązane, 1 = jak parafraza
+
+corpus = {}
+for n, e in E_cmp.items():
+    S = te.cosine_matrix(e)
+    corpus[NAMES[n]] = {"top": ta.opposite_share_top(S, df["final"].to_numpy())["top_opposite"],
+                        "jac": ta.lexical_dependence(S, J_words)["spearman_cos_jaccard"]}
+corpus = pd.DataFrame(corpus).reindex(columns=cols)
+
+def length_row(short, long, spearman):
+    return {"cos_short": short["cos"], "cos_long": long["cos"], "norm": long["norma"] / short["norma"], "rho": spearman}
+lens = {}
+for n in W2V_MODELS:
+    ls = te.length_stats(df, E_w2v[n]).rename(columns={"cos_do_centroidu": "cos", "norma_wektora": "norma"})
+    lens[W2V_TITLES[n]] = length_row(ls.iloc[0], ls.iloc[2], ls.iloc[3]["srednie_cos_do_innych"])
+for m in ["fastText", "USE", "TF-IDF"]:
+    t = team_len[team_len["model"] == m].rename(columns={"cos_centroid": "cos"})
+    lens[m] = length_row(t.iloc[0], t.iloc[2], t.iloc[3]["spearman"])
+lens = pd.DataFrame(lens)[cols]
+
+cls = {}
+for lab in ["final", "gold"]:
+    ours = ev_w2v.xs(lab, level="etykiety").rename(index=W2V_TITLES).rename(
+        columns={"kNN10_czystosc": "kNN10", "silhouette_cos": "silhouette"})
+    team_lab = ta.team_classif(lab).set_index("model").rename(index=TEAM_NAMES)
+    cls[lab] = pd.concat([ours, team_lab])[["accuracy", "macro_F1", "kNN10", "silhouette"]].T[cols]
+rec = pd.concat([pd.DataFrame(recall_w2v).T, ta.team_recall().rename(index=TEAM_NAMES)]).T[cols]
+
+Q = ["1. podobne, a różne znaczeniowo", "2. podobne znaczeniowo, inne słowa", "3. różna długość, podobny sens",
+     "4. długość a wyrazistość wektora", "5. przydatność do wydźwięku"]
+cmp_all = pd.DataFrame({
+    (Q[0], "cos: parafraza"): para,
+    (Q[0], "cos: przeciwny sens, podobne słowa"): pm.loc["przeciwny sens, podobne słowa"],
+    (Q[0], "cos: przeciwny sens, te same słowa"): pm.loc["przeciwny sens, te same słowa"],
+    (Q[0], "przeciwny sens na skali (0 = niepowiązane, 1 = parafraza)"): on_scale("przeciwny sens, podobne słowa"),
+    (Q[0], "POZ–NEG wśród 1% najbliższych par (wszystkie pary: 0,125)"): corpus.loc["top"],
+    (Q[1], "cos: niepowiązane"): unrel,
+    (Q[1], "parafraza − niepowiązane"): para - unrel,
+    (Q[1], "Spearman: cos vs wspólne słowa (Jaccard)"): corpus.loc["jac"],
+    (Q[2], "cos: ten sam sens, różna długość"): pm.loc["ten sam sens, różna długość"],
+    (Q[2], "różna długość na skali (0 = niepowiązane, 1 = parafraza)"): on_scale("ten sam sens, różna długość"),
+    (Q[3], "cos do centroidu: krótkie zdania"): lens.loc["cos_short"],
+    (Q[3], "cos do centroidu: długie zdania"): lens.loc["cos_long"],
+    (Q[3], "norma wektora: długie / krótkie"): lens.loc["norm"],
+    (Q[3], "Spearman: liczba tokenów vs śr. cos"): lens.loc["rho"],
+    (Q[4], "accuracy, final (baza 0,415)"): cls["final"].loc["accuracy"],
+    (Q[4], "macro-F1, final"): cls["final"].loc["macro_F1"],
+    (Q[4], "accuracy, gold (baza 0,25)"): cls["gold"].loc["accuracy"],
+    (Q[4], "macro-F1, gold"): cls["gold"].loc["macro_F1"],
+    (Q[4], "kNN-10, final (losowo 0,305)"): cls["final"].loc["kNN10"],
+    (Q[4], "silhouette, final"): cls["final"].loc["silhouette"],
+    (Q[4], "czułość POZ"): rec.loc["POZ"],
+    (Q[4], "czułość NEG"): rec.loc["NEG"],
+    (Q[4], "czułość NEU"): rec.loc["NEU"],
+}).T.astype(float)
+cmp_all.index.names = ["pytanie", "miara"]
+display(cmp_all.map(lambda v: "–" if pd.isna(v) else f"{v:.3f}"))"""),
 ]
 
-ANSWERS_ID = "w2v-3-7-6"
-ANSWERS_HEADER = """#### 3.7.6 Odpowiedzi na pytania pomocnicze (Word2Vec)
+ANSWERS_ID = "w2v-3-7-7"
+ANSWERS_HEADER = """#### 3.7.7 Odpowiedzi na pytania pomocnicze: Word2Vec w porównaniu z innymi metodami
 
-Odpowiedzi dla uśrednionego Word2Vec na podstawie 3.7.1–3.7.5. Przy dwóch liczbach pierwsza dotyczy modelu IPI PAN,
-druga PolEmo. Opierają się na 200 zdaniach i 12 parach kontrolnych, więc są ilustracją, a nie statystyką.
-Ten sam tekst jest w `results/text_embeddings/odpowiedzi_w2v.md`, a w skrócie w sprawozdaniu."""
+Każda odpowiedź opiera się na konkretnych przykładach i liczbach z sekcji 3.7.1–3.7.6 (Word2Vec, zestawienie) oraz
+3.1–3.5 (fastText, USE i TF-IDF, wyniki zespołu). Przy dwóch liczbach dla Word2Vec pierwsza dotyczy modelu IPI PAN,
+druga PolEmo. 200 zdań i 12 par kontrolnych to ilustracja, a nie statystyka. Ten sam tekst jest
+w `results/text_embeddings/odpowiedzi_porownanie.md`."""
 
 # komórka kontrolna – tylko w uruchomieniu skryptu, nie trafia do notebooków
 CHECK_CODE = r"""import json
@@ -224,15 +301,19 @@ for n in W2V_MODELS:
     assert np.isclose(lex_w2v[n]["spearman_cos_jaccard"], ref["q2_lexical"][n]["spearman_cos_jaccard"]), f"pyt. 2 {n}"
     rec = pd.Series(ref["q5_recall"][n])[te.config.SENT_LABELS].to_numpy(float)
     assert np.allclose(recall_w2v[W2V_TITLES[n]].to_numpy(float), rec), f"recall {n}"
+# fastText (osadzenia z lokalnego uruchomienia) i TF-IDF (od nowa) = te same miary co u zespołu w 3.5
+team_f = ta.team_classif("final").set_index("model")
+for n in ["fasttext", "tfidf"]:
+    r = te.evaluate_embeddings(E_cmp[n], df["final"])
+    got = [r["accuracy"], r["macro_F1"], r["kNN10_czystosc"], r["silhouette_cos"]]
+    assert np.allclose(got, team_f.loc[n, ["accuracy", "macro_F1", "kNN10", "silhouette"]].to_numpy(float)), n
 print("ZGODNE z results/text_embeddings")"""
 
 
 def answers_markdown() -> str:
-    """Odpowiedzi z ``odpowiedzi_w2v.md`` (jedno źródło tekstu): bez tytułu i wstępu, nagłówki ``##`` jako pogrubienia."""
+    """Odpowiedzi z ``odpowiedzi_porownanie.md`` (jedno źródło tekstu), bez tytułu i wstępu pliku."""
     text = ANSWERS_MD.read_text(encoding="utf-8")
-    body = text[text.index("\n## ") + 1:]
-    body = re.sub(r"^## (.+)$", r"**\1**", body, flags=re.M)
-    return ANSWERS_HEADER + "\n\n" + body.strip()
+    return ANSWERS_HEADER + "\n\n" + text[text.index("**1. "):].strip()
 
 
 def w2v_cells() -> list[tuple[str, list]]:

@@ -46,8 +46,11 @@ jupyter lab notebooks/Text_Embeddings.ipynb        # albo: jupyter notebook …,
   podsekcje:
   * **1.4**: osadzenia, pokrycie słownika, podgląd macierzy, 2 mapy podobieństwa;
   * **2.1**: 2 interaktywne wykresy t-SNE (hover: zdanie, etykiety gold, A1, A2, final);
-  * **3.7**: analiza do pytań 1–5 (te same funkcje co 3.1–3.5, porównanie pięciu modeli, interaktywny wykres
-    długości) i odpowiedzi 3.7.6 (z `results/text_embeddings/odpowiedzi_w2v.md`).
+  * **3.7**: analiza do pytań 1–5 (3.7.1–3.7.5: te same funkcje co 3.1–3.5, interaktywny wykres długości);
+    zestawienie pięciu modeli w jednej tabeli według pytań (3.7.6); odpowiedzi na pytania 1–5, Word2Vec
+    w porównaniu z fastText, USE i TF-IDF (3.7.7, tekst z `results/text_embeddings/odpowiedzi_porownanie.md`).
+    W zestawieniu dwie miary korpusowe (POZ–NEG wśród 1% najbliższych par, Spearman cos vs Jaccard) liczone są też
+    dla fastText (osadzenia CBOW z `results/text_embeddings_local/`, miary jak u zespołu) i TF-IDF; dla USE ich brak.
 
   Dopisuje je `python -m src.notebook_w2v` (ok. 30 s). Wykonanego notebooka zespołu nie uruchamiamy od nowa, bo
   w Windows nie ma USE z TF Hub. Skrypt wykonuje tylko komórki Word2Vec (po komórkach startowych zespołu), wpisuje ich

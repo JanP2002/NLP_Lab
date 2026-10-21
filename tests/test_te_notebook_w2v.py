@@ -37,8 +37,10 @@ def test_insert_is_idempotent_and_reversible():
 
 def test_answers_come_from_markdown_file():
     md = nw.answers_markdown()
-    assert md.startswith("#### 3.7.6") and "\n## " not in md
-    assert "**1. Czy są zdania" in md and "**5. Czy osadzenia nadają się" in md
+    assert md.startswith("#### 3.7.7") and "\n#" not in md                    # bez tytułu pliku
+    for k in range(1, 6):
+        assert f"**{k}. Czy " in md
+    assert md.count("_Odpowiedź:_") == 5
 
 
 def test_source_notebook_has_w2v_cells_without_outputs():
@@ -57,7 +59,7 @@ def test_executed_notebook_has_interactive_w2v_figures():
     for anchor, first in ANCHORS.items():
         assert ids[ids.index(anchor) + 1] == first
     code = [c for c in _w2v(nb) if c.cell_type == "code"]
-    assert len(code) == 11 and all(c.execution_count for c in code)
+    assert len(code) == 12 and all(c.execution_count for c in code)
     outs = [o for c in code for o in c.outputs]
     assert not [o for o in outs if o.output_type == "error"]
     figs = [o.data for o in outs if npl.PLOTLY_MIME in o.get("data", {})]
