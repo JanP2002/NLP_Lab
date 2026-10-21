@@ -180,10 +180,56 @@ ODW & 17 & 15 & 20 & 23 \\
 W tej części porównano dwa modele word2vec różniące się korpusem uczącym: ogólny model IPI PAN i model wytrenowany
 na recenzjach PolEmo. Kod: \texttt{src/word\_embeddings.py} (osadzenia), \texttt{src/word\_tsne.py} (t-SNE),
 \texttt{src/word\_neighbours.py} (najbliższe słowa), \texttt{src/word\_report.py} (tabele i liczby do sprawozdania).
+
+W ramach eksperymentu wykorzystano również model FastText do wyznaczania osadzeń słów występujących w anotowanym korpusie. Model ten, podobnie jak word2Vec, reprezentuje słowa za pomocą wektorów liczbowych, jednak dodatkowo uwzględnia n-gramy znakowe. Pozwala to uwzględniać budowę wyrazów i lepiej radzić sobie z różnymi formami fleksyjnymi oraz rzadkimi słowami.
+
 \inputorTodo{we_models}{opis modeli i pokrycia słownika}
 \inputorTodo{we_tsne}{wykres t-SNE słów}
+
+\begin{figure}[H]
+	\centering
+	\includegraphics[width=0.95\textwidth]{tsne-word_fasttex.png}
+	\caption{t-SNE słów - FastText.}
+	\label{fig:tsne-word_fasttext}
+\end{figure}
+
+Na rysunku \ref{fig:tsne-word_fasttext} zaprezentowano t-SNE   dla embeddingów wykorzystując model FastText. Punkty reprezentujące poszczególne etykiety są w dużym stopniu wymieszane, a największa klasa wyrażeń pozytywnych zajmuje znaczną część przestrzeni. Niewielkie lokalne skupiska nie odpowiadają jednoznacznie konkretnym etykietom. Wersja interaktywna znajduję się w repozytorium (
+\texttt{tsne\_words\_fasttext.html)}.
+
+
 \inputorTodo{we_knn}{listy najbliższych sąsiadów}
+
+\begin{table}[ht]
+	\centering
+	\begin{tabular}{ll}
+		\hline
+		Słowo & Najbardziej podobne słowa \\
+		\hline
+		miła &  Miła, przemiła, sympatyczna, przesympatyczna, Przemiła \\
+		polecam & Polecam, polecama, POlecam, polecamOK, polecam8 \\
+		dobrze & dobrz, świetnie, doskonale, bdobrze, idobrze \\
+		ok & Ok, ok.wielki, szybko.wielki, oki, polecam.wielki \\
+		brudne & śmierdzące, brudzone, Brudne, pobrudzone, niedomyte \\
+		problem & wproblem, Problem, dylemat, roblem, kłopot \\
+		niestety & stety, ale, niestet, niestetyy, niestey \\
+		bardzo & badzo, niezwykle, niesamowicie, Pardzo, baaaaaardzo \\
+		trochę & troszkę, troszeczkę, odrobinkę, ciutkę, rochę \\
+		nie & inie, Nie, ani, nigdy, przenigdzie \\
+		\hline
+	\end{tabular}
+	\caption{Pięć najbliższych słów  słów w modelu FastText.}
+	\label{tab:fasttext}
+\end{table}
+
+Na podstawie tabeli \ref{tab:fasttext} można zauważyć, że model FastText znajduje zarówno słowa o podobnym znaczeniu, np. „miła” i „sympatyczna”, jak i różne formy fleksyjne oraz warianty zapisu, np. „trochę” i „troszkę” czy „bardzo” i „badzo”. Wynika to z wykorzystania n-gramów znakowych, które pozwalają modelowi uwzględniać podobieństwo w budowie wyrazów. Jednocześnie wśród najbliższych sąsiadów pojawiają się literówki i nietypowe formy, co wskazuje, że podobieństwo wektorowe nie zawsze oznacza podobieństwo semantyczne. Wyniki sugerują, że FastText może być przydatny w analizie polskojęzycznych opinii, szczególnie w przypadku odmian fleksyjnych i niestandardowego zapisu słów.
+
+
+
+
 \IfFileExists{sections/we_dyskusja.tex}{\input{sections/we_dyskusja}}{\todo{dyskusja wyników i odpowiedzi na cztery pytania pomocnicze}}
+
+
+
 
 % -----------------------------------------------------------------------------
 \section{Część II: Text Embeddings}\label{sec:te}
